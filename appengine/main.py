@@ -11,12 +11,13 @@ server = app.server
 app.layout = html.Div([
     # Top navbar
     html.Nav([
-        html.Div("Yelp Dashboard", style={
+        html.Div("CS163 Project", style={
             "fontWeight": "600",
             "fontSize": "24px",
             "flex": "1"
         }),
         html.Div([
+            dcc.Link("Home", href="/", style={"margin": "0 10px", "textDecoration": "none"}),
             dcc.Link("EDA", href="/eda", style={"margin": "0 10px", "textDecoration": "none"}),
             dcc.Link("Analysis", href="/analysis", style={"margin": "0 10px", "textDecoration": "none"}),
             dcc.Link("Visualization", href="/visualization", style={"margin": "0 10px", "textDecoration": "none"}),
