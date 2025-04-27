@@ -12,6 +12,7 @@
 # below:
 .git
 .gitignore
+preview_datasets/*
 
 # Python pycache:
 __pycache__/

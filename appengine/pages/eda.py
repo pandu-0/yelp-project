@@ -1,73 +1,110 @@
 import dash
-from dash import html, dcc
-import plotly.express as px  # keep this for your real visualizations
+from dash import html, dcc, dash_table
+import pandas as pd
+from google.cloud import storage
+import os
+from io import StringIO
 
 dash.register_page(__name__, path='/eda', name='EDA')
 
+# --------- Load JSON files ---------
+def get_csv_from_gcs(bucket_name, source_blob_name):
+    """Downloads a blob from the bucket."""
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+
+    # The ID of your GCS object
+    # source_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    # Construct a client side representation of a blob.
+    # Note `Bucket.blob` differs from `Bucket.get_blob` as it doesn't retrieve
+    # any content from Google Cloud Storage. As we don't need additional data,
+    # using `Bucket.blob` is preferred here.
+    blob = bucket.blob(source_blob_name)
+    data = blob.download_as_text()
+    return pd.read_json(StringIO(data), lines=True)
+
+# --------- Load JSON files ---------
+review_df = pd.read_json('path/to/review.json', lines=True)
+user_df = pd.read_json('path/to/user.json', lines=True)
+tips_df = pd.read_json('path/to/tip.json', lines=True)
+business_df = pd.read_json('path/to/business.json', lines=True)
+checkin_df = pd.read_json('path/to/checkin.json', lines=True)
+
+# show a few rows (head) for preview
+review_preview = review_df.head().to_dict('records')
+user_preview = user_df.head().to_dict('records')
+tips_preview = tips_df.head().to_dict('records')
+business_preview = business_df.head().to_dict('records')
+checkin_preview = checkin_df.head().to_dict('records')
+
+# --------- Layout ---------
 layout = html.Div([
-    html.H2("Exploratory Data Analysis", style={"fontWeight": "600"}),
+    html.H1("EDA", style={"fontWeight": "600"}),
 
-    html.H3("Dataset Summary"),
+    html.H3("Yelp Dataset Summary:", style={"marginTop": "30px"}),
+    html.P("The Yelp Open dataset comes with 5 files in `json` format:"),
     html.Ul([
-        html.Li("Contains nearly 65,000 restaurants"),
-        html.Li("Median number of reviews per restaurant: 15"),
-        html.Li("Data types: Numerical, Categorical, and Text"),
-        html.Li("Features: Review text, review rating, average rating, categories"),
-        html.Li("Target: Restaurant (for clustering by topic/sentiment modeling)")
-    ]),
+        html.Li(html.Span([html.Code("Review"), " : Contains reviews and related data left by a customer for a business"])),
+        html.Li(html.Span([html.Code("User"), " : Contains the users and their profile information"])),
+        html.Li(html.Span([html.Code("Tips"), " : Tip or comment left by a user for a business"])),
+        html.Li(html.Span([html.Code("Business"), " : Contains information about the business and reviews"])),
+        html.Li(html.Span([html.Code("check-in"), " : Contains check-in information for businesses"])),
+    ], style={"paddingLeft": "20px"}),
 
-    html.H3("Preprocessing"),
-    html.Ul([
-        html.Li("103 null values found only in the Categories column"),
-        html.Li("9 duplicate rows detected and removed"),
-        html.Li("No other missing values")
-    ]),
+    html.H3("Preview of Datasets", style={"marginTop": "30px"}),
 
-    html.H3("Numerical Features"),
-    html.Ul([
-        html.Li("review_stars: rating left by a reviewer (out of 5)"),
-        html.Li("avg_review: average star rating for a restaurant (out of 5)"),
-        html.Li("review_count: number of reviews per restaurant"),
-        html.Li("is_open: binary indicator of whether a restaurant is still open")
-    ]),
+    html.Div([
+        html.H4("Review Dataset Preview"),
+        dash_table.DataTable(
+            data=review_preview,
+            page_size=5,
+            style_table={'overflowX': 'auto'},
+            style_cell={'textAlign': 'left', 'fontFamily': 'Poppins, sans-serif', 'fontSize': '14px'}
+        ),
+    ], style={"marginBottom": "40px"}),
 
-    html.H3("Visualizations"),
-    html.P("Below are placeholders for the EDA graphs. Replace these with your actual Plotly figures."),
+    html.Div([
+        html.H4("User Dataset Preview"),
+        dash_table.DataTable(
+            data=user_preview,
+            page_size=5,
+            style_table={'overflowX': 'auto'},
+            style_cell={'textAlign': 'left', 'fontFamily': 'Poppins, sans-serif', 'fontSize': '14px'}
+        ),
+    ], style={"marginBottom": "40px"}),
 
-    # html.Div([
-    #     html.H4("Review Stars Distribution"),
-    #     dcc.Graph(id='review-stars-dist', figure=px.histogram()),  # Replace with actual data
-    # ], style={"marginBottom": "40px"}),
+    html.Div([
+        html.H4("Tips Dataset Preview"),
+        dash_table.DataTable(
+            data=tips_preview,
+            page_size=5,
+            style_table={'overflowX': 'auto'},
+            style_cell={'textAlign': 'left', 'fontFamily': 'Poppins, sans-serif', 'fontSize': '14px'}
+        ),
+    ], style={"marginBottom": "40px"}),
 
-    # html.Div([
-    #     html.H4("Average Rating Histogram"),
-    #     dcc.Graph(id='avg-review-hist', figure=px.histogram()),  # Replace with actual data
-    # ], style={"marginBottom": "40px"}),
+    html.Div([
+        html.H4("Business Dataset Preview"),
+        dash_table.DataTable(
+            data=business_preview,
+            page_size=5,
+            style_table={'overflowX': 'auto'},
+            style_cell={'textAlign': 'left', 'fontFamily': 'Poppins, sans-serif', 'fontSize': '14px'}
+        ),
+    ], style={"marginBottom": "40px"}),
 
-    # html.Div([
-    #     html.H4("Review Count Distribution (Outliers Removed)"),
-    #     dcc.Graph(id='review-count-dist', figure=px.histogram()),  # Replace with actual data
-    # ], style={"marginBottom": "40px"}),
-
-    # html.Div([
-    #     html.H4("Open vs Closed Restaurants"),
-    #     dcc.Graph(id='is-open-pie', figure=px.pie()),  # Replace with actual data
-    # ]),
-
-    html.H3("Preliminary Insights"),
-    html.Ul([
-        html.Li("5-star ratings are the most commonly given"),
-        html.Li("The most common average rating is 4 stars"),
-        html.Li("Majority of restaurants are still open")
-    ]),
-
-    html.H3("Next Steps & Hypotheses"),
-    html.Ul([
-        html.Li("Sentiment analysis may impact ratings"),
-        html.Li("Certain keywords may correlate with high or low ratings")
-    ]),
-
-    html.Br(),
-    dcc.Link(html.Button("Back to Home"), href="/")
+    html.Div([
+        html.H4("Check-in Dataset Preview"),
+        dash_table.DataTable(
+            data=checkin_preview,
+            page_size=5,
+            style_table={'overflowX': 'auto'},
+            style_cell={'textAlign': 'left', 'fontFamily': 'Poppins, sans-serif', 'fontSize': '14px'}
+        ),
+    ], style={"marginBottom": "40px"})
+    
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
-
