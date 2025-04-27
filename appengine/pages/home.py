@@ -6,7 +6,7 @@ dash.register_page(__name__, path='/', name='Home')
 layout = html.Div([
     html.H2("Restaurant Review Analysis", style={"fontWeight": "600", "marginBottom": "10px"}),
     html.P("Group ID: 19"),
-    html.P("Members: Manmohanbabu Rupanagudi, Singaram Subramanyan"),
+    html.P("Members: Pandu Rupanagudi, Singaram Subramanyan"),
 
     html.H3("Project Summary"),
     html.P(
