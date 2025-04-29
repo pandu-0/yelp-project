@@ -5,11 +5,11 @@ import pandas as pd
 import plotly.express as px
 
 dash.register_page(__name__, path='/visualization', name='Visualization')
-df = pd.read_csv('Adjective_correlation_rating.csv')
+df = pd.read_csv('preview_datasets/Adjective_correlation_rating')
 
 # Sort top 5 and bottom 5
-top5 = df.sort_values(by='correlation', ascending=False).head(5)
-bottom5 = df.sort_values(by='correlation', ascending=True).head(5)
+top5 = df.sort_values(by='Correlation', ascending=False).head(5)
+bottom5 = df.sort_values(by='Correlation', ascending=True).head(5)
 
 @dash.callback(
     Output('correlation-graph', 'figure'),
@@ -25,13 +25,13 @@ def update_graph(selected_group):
 
     fig = px.bar(
         filtered_df,
-        x='correlation',    
-        y='adjective',      
+        x='Correlation',    
+        y='Adjective',      
         orientation='h',     
-        color='correlation',
+        color='Correlation',
         color_continuous_scale='RdBu',
-        hover_data={'average_rating': True, 'correlation': ':.2f'},
-        labels={'correlation': 'Correlation with Rating', 'adjective': 'Adjective'},
+        hover_data={'average_rating': True, 'Correlation': ':.2f'},
+        labels={'Correlation': 'Correlation with Rating', 'Adjective': 'Adjective'},
         title='Top 5 and Bottom 5 Correlated Adjectives'
     )
 
