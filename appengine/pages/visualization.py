@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 
 dash.register_page(__name__, path='/visualization', name='Visualization')
-df = pd.read_csv('preview_datasets/Adjective_correlation_rating')
+df = pd.read_csv('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/Adjective_correlation_rating')
 
 # Sort top 5 and bottom 5
 top5 = df.sort_values(by='Correlation', ascending=False).head(5)

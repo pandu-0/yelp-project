@@ -11,19 +11,10 @@ dash.register_page(__name__, path='/eda', name='EDA')
 # --------- Load JSON files ---------
 def get_json_from_gcs(bucket_name, source_blob_name):
     """Downloads a blob from the bucket."""
-    # The ID of your GCS bucket
-    # bucket_name = "your-bucket-name"
-
-    # The ID of your GCS object
-    # source_blob_name = "storage-object-name"
-
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
 
     # Construct a client side representation of a blob.
-    # Note `Bucket.blob` differs from `Bucket.get_blob` as it doesn't retrieve
-    # any content from Google Cloud Storage. As we don't need additional data,
-    # using `Bucket.blob` is preferred here.
     blob = bucket.blob(source_blob_name)
     data = blob.download_as_text()
     return pd.read_json(StringIO(data), lines=True)
@@ -52,13 +43,13 @@ tips_preview = tips_df.to_dict('records')
 business_preview = business_df.to_dict('records')
 checkin_preview = checkin_df.to_dict('records')
 
-philly_reviews_df = get_json_from_gcs("cs163-project-452620.appspot.com", "philly_restaurants_reviews_for_gcloud.json")
-# --------- Compute statistics dynamically ---------
-unique_restaurants_count = philly_reviews_df['business_id'].nunique()
+# --------- Get statistics ---------
+unique_restaurants_count = 5852
+stars_summary = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/stars_describe.json")
+stars_summary.columns = ['statistic', 'stars']  # Rename columns for nice table display
 
-stars_summary = philly_reviews_df['stars'].describe().round(2).to_frame().reset_index()
-stars_summary.columns = ['Statistic', 'Stars']  # Rename columns for nice table display
-
+stars_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/stars_count.json")
+is_open_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/is_open_count.json")
 
 # --------- Layout ---------
 layout = html.Div([
@@ -191,8 +182,10 @@ html.H3("Dataset Statistics", style={"marginTop": "40px"}),
 
 # Unique restaurants
 html.Div([
-    html.H4("Unique Restaurants Count"),
-    html.P(f"{unique_restaurants_count:,}")  # Format number with commas
+    html.H4([
+        "Unique Restaurants Count: ",
+        html.Span(f"{unique_restaurants_count:,}", style={"fontWeight": "normal"})
+    ])
 ], style={
     "backgroundColor": "#f8f8f8",
     "padding": "15px",
@@ -257,21 +250,24 @@ html.H3("Distributions", style={"marginTop": "40px"}),
 html.Div([
     # First Plot (Stars)
     html.Div([
-        dcc.Graph(
-            figure=px.histogram(
-                philly_reviews_df,
-                x="stars",
-                nbins=5,
-                title="Distribution of Stars",
-                labels={"stars": "Star Rating"}
-            ).update_layout(bargap=0.3, height=400)  # Set fixed height
-        ),
+        dcc.Graph(figure=px.bar(
+            stars_count,
+            x='stars',
+            y='count',
+            title='Countplot of Restaurant Review Stars',
+            labels={'stars': 'Star Rating', 'count': 'Review Count'}
+        ).update_layout(
+            height=400,
+            bargap=0.3
+        )),
         html.Details([
             html.Summary("Show Code"),
             dcc.Markdown('''
             ```python
-            import plotly.express as px
-            fig = px.histogram(philly_reviews_df, x='stars', nbins=5)
+            stars_count = philly_reviews_df['stars'].value_counts().reset_index()
+            stars_count.columns = ['stars', 'count']
+            stars_count = stars_count.sort_values(by='stars')
+            fig = px.bar(stars_count, x='stars', y='count')
             fig.update_layout(bargap=0.3)
             fig.show()
             ```
@@ -286,15 +282,16 @@ html.Div([
     # Second Plot (is_open)
     html.Div([
         dcc.Graph(
-            figure=px.histogram(
-                philly_reviews_df,
+            figure=px.bar(
+                is_open_count,
                 x="is_open",
-                title="Distribution of Restaurant Open Status",
+                y="count",
+                title="Countplot of Restaurant Review Open Status",
                 labels={"is_open": "Is Open (1 = Open, 0 = Closed)"}
             ).update_layout(
-                bargap=0.3,
                 height=400,
-                xaxis=dict(tickmode='array', tickvals=[0, 1])  # Clean up x-ticks
+                xaxis=dict(tickmode='array', tickvals=[0, 1]),  # Clean up x-ticks
+                bargap=0.3
             )
         ),
         html.Details([
@@ -302,7 +299,8 @@ html.Div([
             dcc.Markdown('''
             ```python
             import plotly.express as px
-            fig = px.histogram(philly_reviews_df, x='is_open')
+            is_open_count = philly_restaurant_reviews['is_open'].value_counts().to_frame().reset_index()
+            fig = px.bar(is_open_count, x='is_open', y='count')
             fig.update_layout(bargap=0.3)
             fig.show()
             ```
