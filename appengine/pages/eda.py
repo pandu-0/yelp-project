@@ -51,6 +51,8 @@ stars_summary.columns = ['statistic', 'stars']  # Rename columns for nice table 
 stars_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/stars_count.json")
 is_open_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/is_open_count.json")
 
+restaurant_mean_stars = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/restaurant_mean_stars.json")
+
 # --------- Layout ---------
 layout = html.Div([
     html.H1("Exploratory Data Analysis", style={"fontWeight": "600"}),
@@ -177,146 +179,178 @@ layout = html.Div([
         ),
     ], style={"marginBottom": "40px"}),
 
-    # ------- Display Statistics -------
-html.H3("Dataset Statistics", style={"marginTop": "40px"}),
+        # ------- Display Statistics -------
+    html.H3("Dataset Statistics", style={"marginTop": "40px"}),
 
-# Unique restaurants
-html.Div([
-    html.H4([
-        "Unique Restaurants Count: ",
-        html.Span(f"{unique_restaurants_count:,}", style={"fontWeight": "normal"})
-    ])
-], style={
-    "backgroundColor": "#f8f8f8",
-    "padding": "15px",
-    "borderRadius": "10px",
-    "marginBottom": "30px",
-    "fontFamily": "Poppins, sans-serif",
-    "maxWidth": "300px"
-}),
-
-html.Details([
-    html.Summary("Show Code"),
-    dcc.Markdown('''
-    ```python
-    unique_restaurants_count = philly_reviews_df['business_id'].nunique()
-    ```
-    ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
-], style={"marginTop": "10px", "marginBottom": "20px"}),
-
-# Star Ratings Summary
-html.Div([
-    html.H4("Review Star Ratings Summary"),
-    dash_table.DataTable(
-        columns=[
-            {"name": i, "id": i} for i in stars_summary.columns
-        ],
-        data=stars_summary.to_dict('records'),
-        style_table={'overflowX': 'auto', 'minWidth': '100%'},
-        style_cell={
-            'textAlign': 'left',
-            'fontFamily': 'Poppins, sans-serif',
-            'fontSize': '14px',
-            'minWidth': '120px', 'width': '150px', 'maxWidth': '150px',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-            'whiteSpace': 'nowrap'
-        },
-        style_header={
-            'fontWeight': 'bold',
-            'backgroundColor': '#f0f0f0'
-        },
-        page_size=8
-    )
-], style={
-    "backgroundColor": "#f8f8f8",
-    "padding": "20px",
-    "borderRadius": "10px",
-    "fontFamily": "Poppins, sans-serif",
-    "maxWidth": "500px"
-}),
-html.Details([
-    html.Summary("Show Code"),
-    dcc.Markdown('''
-    ```python
-    stars_summary = philly_reviews_df['stars'].describe().round(2).to_frame().reset_index()
-    stars_summary.columns = ['Statistic', 'Stars']
-    ```
-    ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
-], style={"marginTop": "10px", "marginBottom": "20px"}),
-
-html.H3("Distributions", style={"marginTop": "40px"}),
-
-html.Div([
-    # First Plot (Stars)
+    # Unique restaurants
     html.Div([
-        dcc.Graph(figure=px.bar(
-            stars_count,
-            x='stars',
-            y='count',
-            title='Countplot of Restaurant Review Stars',
-            labels={'stars': 'Star Rating', 'count': 'Review Count'}
-        ).update_layout(
-            height=400,
-            bargap=0.3
-        )),
-        html.Details([
-            html.Summary("Show Code"),
-            dcc.Markdown('''
-            ```python
-            stars_count = philly_reviews_df['stars'].value_counts().reset_index()
-            stars_count.columns = ['stars', 'count']
-            stars_count = stars_count.sort_values(by='stars')
-            fig = px.bar(stars_count, x='stars', y='count')
-            fig.update_layout(bargap=0.3)
-            fig.show()
-            ```
-            ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
-        ], style={"marginTop": "10px"})
+        html.H4([
+            "Unique Restaurants Count: ",
+            html.Span(f"{unique_restaurants_count:,}", style={"fontWeight": "normal"})
+        ])
     ], style={
-        "flex": "1",
-        "paddingRight": "20px",
-        "minWidth": "0"
+        "backgroundColor": "#f8f8f8",
+        "padding": "15px",
+        "borderRadius": "10px",
+        "marginBottom": "30px",
+        "fontFamily": "Poppins, sans-serif",
+        "maxWidth": "300px"
     }),
 
-    # Second Plot (is_open)
+    html.Details([
+        html.Summary("Show Code"),
+        dcc.Markdown('''
+        ```python
+        unique_restaurants_count = philly_reviews_df['business_id'].nunique()
+        ```
+        ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+    ], style={"marginTop": "10px", "marginBottom": "20px"}),
+
     html.Div([
-        dcc.Graph(
-            figure=px.bar(
-                is_open_count,
-                x="is_open",
-                y="count",
-                title="Countplot of Restaurant Review Open Status",
-                labels={"is_open": "Is Open (1 = Open, 0 = Closed)"}
+        # Left: Star Ratings Summary
+        html.Div([
+            html.H4("Review Star Ratings Summary"),
+            dash_table.DataTable(
+                columns=[{"name": i, "id": i} for i in stars_summary.columns],
+                data=stars_summary.to_dict('records'),
+                style_table={'overflowX': 'auto', 'minWidth': '100%'},
+                style_cell={
+                    'textAlign': 'left',
+                    'fontFamily': 'Poppins, sans-serif',
+                    'fontSize': '14px',
+                    'minWidth': '120px', 'width': '150px', 'maxWidth': '150px',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap'
+                },
+                style_header={
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#f0f0f0'
+                },
+                page_size=8
+            ),
+            html.Details([
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                stars_summary = philly_reviews_df['stars'].describe().round(2).to_frame().reset_index()
+                stars_summary.columns = ['Statistic', 'Stars']
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ])
+        ], style={
+            "backgroundColor": "#f8f8f8",
+            "padding": "20px",
+            "borderRadius": "10px",
+            "fontFamily": "Poppins, sans-serif",
+            "flex": "1",
+            "minWidth": "0"
+        }),
+
+        # Right: Violin Plot
+        html.Div([
+            dcc.Graph(figure=px.violin(
+                restaurant_mean_stars,
+                y='stars',
+                box=True,
+                title='Distribution of Mean Restaurant Review Stars',
+                labels={'stars': 'Star Rating'}
+            ).update_layout(height=400)),
+            html.Details([
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                restaurant_mean_stars = philly_reviews_df.groupby('business_id')['stars'].mean().to_frame().reset_index()
+                fig = px.violin(restaurant_mean_stars, y='stars', box=True)
+                fig.update_layout(height=400)
+                fig.show()
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ])
+        ], style={
+            "flex": "1",
+            "minWidth": "0",
+            "display": "flex",
+            "flexDirection": "column",
+            "justifyContent": "space-between"
+        }),
+    ], style={
+        "display": "flex",
+        "gap": "20px",
+        "alignItems": "stretch",  # Ensures both children are same height
+        "marginTop": "20px"
+    }),
+
+    html.H3("Distributions", style={"marginTop": "40px"}),
+
+    html.Div([
+        # First Plot (Stars)
+        html.Div([
+            dcc.Graph(figure=px.bar(
+                stars_count,
+                x='stars',
+                y='count',
+                title='Countplot of Restaurant Review Stars',
+                labels={'stars': 'Star Rating', 'count': 'Review Count'}
             ).update_layout(
                 height=400,
-                xaxis=dict(tickmode='array', tickvals=[0, 1]),  # Clean up x-ticks
                 bargap=0.3
-            )
-        ),
-        html.Details([
-            html.Summary("Show Code"),
-            dcc.Markdown('''
-            ```python
-            import plotly.express as px
-            is_open_count = philly_restaurant_reviews['is_open'].value_counts().to_frame().reset_index()
-            fig = px.bar(is_open_count, x='is_open', y='count')
-            fig.update_layout(bargap=0.3)
-            fig.show()
-            ```
-            ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
-        ], style={"marginTop": "10px"})
-    ], style={
-        "flex": "1",
-        "paddingLeft": "20px",
-        "minWidth": "0"
-    }),
-], style={
-    "display": "flex",
-    "flexWrap": "wrap",
-    "gap": "20px",
-    "marginTop": "20px"
-})
+            )),
+            html.Details([
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                stars_count = philly_reviews_df['stars'].value_counts().reset_index()
+                stars_count.columns = ['stars', 'count']
+                stars_count = stars_count.sort_values(by='stars')
+                fig = px.bar(stars_count, x='stars', y='count')
+                fig.update_layout(bargap=0.3)
+                fig.show()
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={"marginTop": "10px"})
+        ], style={
+            "flex": "1",
+            "paddingRight": "20px",
+            "minWidth": "0"
+        }),
 
-    
+        # Second Plot (is_open)
+        html.Div([
+            dcc.Graph(
+                figure=px.bar(
+                    is_open_count,
+                    x="is_open",
+                    y="count",
+                    title="Countplot of Restaurant Review Open Status",
+                    labels={"is_open": "Is Open (1 = Open, 0 = Closed)"}
+                ).update_layout(
+                    height=400,
+                    xaxis=dict(tickmode='array', tickvals=[0, 1]),  # Clean up x-ticks
+                    bargap=0.3
+                )
+            ),
+            html.Details([
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                import plotly.express as px
+                is_open_count = philly_restaurant_reviews['is_open'].value_counts().to_frame().reset_index()
+                fig = px.bar(is_open_count, x='is_open', y='count')
+                fig.update_layout(bargap=0.3)
+                fig.show()
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={"marginTop": "10px"})
+        ], style={
+            "flex": "1",
+            "paddingLeft": "20px",
+            "minWidth": "0"
+        }),
+    ], style={
+        "display": "flex",
+        "flexWrap": "wrap",
+        "gap": "20px",
+        "marginTop": "20px"
+    })
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
