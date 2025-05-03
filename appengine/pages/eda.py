@@ -1,5 +1,5 @@
 import dash
-from dash import html, dcc, dash_table
+from dash import dcc, html, dash_table, Output, Input, callback
 import pandas as pd
 from google.cloud import storage
 import os
@@ -52,6 +52,40 @@ stars_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/stars_c
 is_open_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/is_open_count.json")
 
 restaurant_mean_stars = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/restaurant_mean_stars.json")
+restaurant_review_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/restaurant_review_count.json")
+
+year_and_is_open_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/year_and_is_open.json")
+
+philly_restaurants = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/philly_restaurants.json")
+
+# Convert is_open to string for clarity
+philly_restaurants['is_open'] = philly_restaurants['is_open'].map({1: "Open", 0: "Closed"})
+
+@callback(
+    Output('map-graph', 'figure'),
+    Input('color-radio', 'value')
+)
+def update_map(color_by):
+    fig = px.scatter_mapbox(
+        philly_restaurants,
+        lat="latitude",
+        lon="longitude",
+        color=color_by,
+        hover_name="name",
+        hover_data={"categories": True, "stars": True, "review_count": True},
+        zoom=11,
+        center={"lat": 39.9526, "lon": -75.1652},
+        height=600
+    )
+
+    fig.update_layout(
+        mapbox_style="carto-positron",
+        margin={"r":0, "t":40, "l":0, "b":0},
+        title=f"Philadelphia Restaurants Colored by {color_by.replace('_', ' ').title()}",
+        title_x=0.5
+    )
+    return fig
+
 
 # --------- Layout ---------
 layout = html.Div([
@@ -352,5 +386,101 @@ layout = html.Div([
         "flexWrap": "wrap",
         "gap": "20px",
         "marginTop": "20px"
-    })
+    }),
+    
+    html.Div([
+        # Violin plot of review count grouped by buisiness_id
+        html.Div([
+            dcc.Graph(
+                figure=px.violin(
+                    restaurant_review_count,
+                    y='review',
+                    box=True,
+                    title="Distribution of Number of Reviews per Restaurant",
+                    labels={'review': 'Number of Reviews'}
+                ).update_layout(
+                    height=400,
+                )
+            ),
+            # show the plot code
+            html.Details([
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                restaurant_review_count = philly_reviews_df.groupby('business_id')['review'].count().to_frame().reset_index()
+                fig = px.violin(restaurant_review_count, y='review', box=True),
+                fig.update_layout(height=400),
+                fig.show()
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={"marginTop": "10px"})
+        ], style={
+            "flex": "1",
+            "paddingLeft": "20px",
+            "minWidth": "0"
+        }),
+
+        # Countplot of review count grouped by year and hue to is_open
+        html.Div([
+            dcc.Graph(
+                figure=px.histogram(
+                    year_and_is_open_count,
+                    x='year',
+                    color='is_open',
+                    barmode='group',
+                    category_orders={'year': sorted(year_and_is_open_count['year'].unique())},
+                    labels={'is_open': 'Is Open', 'year': 'Year', 'count': 'Count'},
+                    title='Restaurant Reviews by Year and Open Status'
+                ).update_layout(
+                    xaxis_title='Year',
+                    yaxis_title='Count',
+                    xaxis_tickangle=45,
+                    bargap=0.3,
+                    height=400
+                )
+            ),
+            # show the plot code
+            html.Details([
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                    ```python
+                    plt.figure(figsize=(12, 6))  # Make the plot wider
+                    sns.countplot(philly_restaurant_reviews, x='year', hue='is_open')
+                    plt.xticks(rotation=45)      # Rotate x-axis labels 45 degrees
+                    plt.tight_layout()           # Adjust layout to prevent label cutoff
+                    plt.show()         
+                    ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={'marginTop': '10px'})
+        ],  style={
+            "flex": "1",
+            "paddingLeft": "20px",
+            "minWidth": "0"
+        })
+    ], style={
+        "display": "flex",
+        "flexWrap": "wrap",
+        "gap": "20px",
+        "marginTop": "20px"
+    }),
+
+    # ------- Map -------
+    html.H3("Map of Philadelphia Restaurants", style={"marginTop": "40px"}),
+    html.Div([
+        html.Label("Select Coloring Option:", style={"fontWeight": "bold", "fontSize": "16px"}),
+        dcc.RadioItems(
+            id="color-radio",
+            options=[
+                {"label": "Open Status", "value": "is_open"},
+                {"label": "Star Rating", "value": "stars"},
+                {"label": "Review Count", "value": "review_count"},
+            ],
+            value="is_open",
+            labelStyle={"display": "inline-block", "margin-right": "15px"},
+            inputStyle={"margin-right": "6px"},
+            style={"margin-bottom": "10px"},
+        ),
+        dcc.Graph(id="map-graph")
+    ])
+    
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
