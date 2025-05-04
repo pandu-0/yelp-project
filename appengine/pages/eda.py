@@ -271,6 +271,11 @@ layout = html.Div([
                 stars_summary.columns = ['Statistic', 'Stars']
                 ```
                 ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ]),
+            html.Details([
+            html.Summary("Description"),
+            html.P("The table shows statistics of the Review Stars column. "
+                   "As per the table, we can see that most of the reviews are between 3 and 5 stars.")
             ])
         ], style={
             "backgroundColor": "#f8f8f8",
@@ -284,22 +289,27 @@ layout = html.Div([
         # Right: Violin Plot
         html.Div([
             dcc.Graph(figure=px.violin(
-                restaurant_mean_stars,
-                y='stars',
-                box=True,
-                title='Distribution of Mean Restaurant Review Stars',
-                labels={'stars': 'Star Rating'}
+            restaurant_mean_stars,
+            y='stars',
+            box=True,
+            title='Distribution of Mean Restaurant Review Stars',
+            labels={'stars': 'Star Rating'}
             ).update_layout(height=400)),
             html.Details([
-                html.Summary("Show Code"),
-                dcc.Markdown('''
-                ```python
-                restaurant_mean_stars = philly_reviews_df.groupby('business_id')['stars'].mean().to_frame().reset_index()
-                fig = px.violin(restaurant_mean_stars, y='stars', box=True)
-                fig.update_layout(height=400)
-                fig.show()
-                ```
-                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            html.Summary("Show Code"),
+            dcc.Markdown('''
+            ```python
+            restaurant_mean_stars = philly_reviews_df.groupby('business_id')['stars'].mean().to_frame().reset_index()
+            fig = px.violin(restaurant_mean_stars, y='stars', box=True)
+            fig.update_layout(height=400)
+            fig.show()
+            ```
+            ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ]),
+            html.Details([
+            html.Summary("Description"),
+            html.P("This violin plot shows the distribution of the mean star ratings for restaurants. "
+                   "As per the graph, most restaurants have a mean rating between 3.5 and 4.5 stars. ")
             ])
         ], style={
             "flex": "1",
@@ -308,7 +318,7 @@ layout = html.Div([
             "flexDirection": "column",
             "justifyContent": "space-between"
         }),
-    ], style={
+        ], style={
         "display": "flex",
         "gap": "20px",
         "alignItems": "stretch",  # Ensures both children are same height
@@ -321,27 +331,32 @@ layout = html.Div([
         # First Plot (Stars)
         html.Div([
             dcc.Graph(figure=px.bar(
-                stars_count,
-                x='stars',
-                y='count',
-                title='Countplot of Restaurant Review Stars',
-                labels={'stars': 'Star Rating', 'count': 'Review Count'}
+            stars_count,
+            x='stars',
+            y='count',
+            title='Countplot of Restaurant Review Stars',
+            labels={'stars': 'Star Rating', 'count': 'Review Count'}
             ).update_layout(
-                height=400,
-                bargap=0.3
+            height=400,
+            bargap=0.3
             )),
             html.Details([
-                html.Summary("Show Code"),
-                dcc.Markdown('''
-                ```python
-                stars_count = philly_reviews_df['stars'].value_counts().reset_index()
-                stars_count.columns = ['stars', 'count']
-                stars_count = stars_count.sort_values(by='stars')
-                fig = px.bar(stars_count, x='stars', y='count')
-                fig.update_layout(bargap=0.3)
-                fig.show()
-                ```
-                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            html.Summary("Show Code"),
+            dcc.Markdown('''
+            ```python
+            stars_count = philly_reviews_df['stars'].value_counts().reset_index()
+            stars_count.columns = ['stars', 'count']
+            stars_count = stars_count.sort_values(by='stars')
+            fig = px.bar(stars_count, x='stars', y='count')
+            fig.update_layout(bargap=0.3)
+            fig.show()
+            ```
+            ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={"marginTop": "10px"}),
+            html.Details([
+            html.Summary("Description"),
+            html.P("The graph depicts the distribution of the Review Stars. "
+                   "As per the graph, a 5 star rating was the most popular rating given.")
             ], style={"marginTop": "10px"})
         ], style={
             "flex": "1",
@@ -375,6 +390,12 @@ layout = html.Div([
                 fig.show()
                 ```
                 ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={"marginTop": "10px"}),
+            html.Details([
+                html.Summary("Description"),
+                html.P("The above graph shows the number of reviews among open and close resturants where 0 is closed and 1 is open. "
+                       "As per the graph, most of the reviews are from open restaurants."
+                       )
             ], style={"marginTop": "10px"})
         ], style={
             "flex": "1",
@@ -413,6 +434,11 @@ layout = html.Div([
                 fig.show()
                 ```
                 ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+            ], style={"marginTop": "10px"}),
+            html.Details([
+                html.Summary("Description"),
+                html.P("the above graph depicts the distribution of the number of reviews for each restaurant. "
+                       "As per the graph, most restaurants have between 0 and 40 reviews, showing that many resturants do not have a lot of reviews. ")
             ], style={"marginTop": "10px"})
         ], style={
             "flex": "1",
@@ -451,7 +477,12 @@ layout = html.Div([
                     plt.show()         
                     ```
                 ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
-            ], style={'marginTop': '10px'})
+            ], style={'marginTop': '10px'}),
+            html.Details([
+                html.Summary("Description"),
+                html.P("The above graph shows the number of reviews by year and open status. "
+                       "As per the graph, most of the reviews are from open restaurants in 2014 to 2019. ")
+            ], style={"marginTop": "10px"})
         ],  style={
             "flex": "1",
             "paddingLeft": "20px",
@@ -480,7 +511,11 @@ layout = html.Div([
             inputStyle={"margin-right": "6px"},
             style={"margin-bottom": "10px"},
         ),
-        dcc.Graph(id="map-graph")
+        dcc.Graph(id="map-graph"),
+        html.P("The map shows the resturants in Philadelphia by open status, star rating, and review count. "
+               "By hovering over the dots, more infomation, such as the name of the resturant and category, can be seen. "
+               , 
+               style={"marginTop": "10px", "fontSize": "17px"})
     ])
     
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
