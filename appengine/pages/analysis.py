@@ -4,7 +4,7 @@ import pandas as pd
 
 dash.register_page(__name__, path='/analysis', name='Analysis')
 
-df = pd.read_csv("preview_datasets/Adjective_correlation_rating")
+df = pd.read_csv("https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/Adjective_correlation_rating")
 
 df["Correlation"] = df["Correlation"].round(2)
 df["average_rating"] = df["average_rating"].round(2)
@@ -76,8 +76,10 @@ layout = html.Div([
     html.H3("Adjective Correlation with Ratings", style={"marginTop": "30px"}),
     html.Div([
         html.P(
-            "This analysis aimed to determine if there was a correlation between the presence of certain adjectives and the review rating. "
-            "This was accomplished through using the nltk to tokenize each review and filtering for adjectives using POS (Part of Speech) tagging. "
+            "This analysis aimed to determine if there was a correlation between the presence of certain adjectives "
+            "and the review rating. "
+            "This was accomplished through using the nltk to tokenize each review and filtering for adjectives using " \
+            "POS (Part of Speech) tagging. "
             "Once filtered down to adjectives, the Pearson correlation coefficient between adjectives and the rating was calculated. "
             "The table below depicts the 5 most and least correlated adjectives."
         )
@@ -105,9 +107,13 @@ layout = html.Div([
         }),
         html.P(
             "The average rating column represents the average rating of the reviews with the particular adjective. "
-            "As per the above table positively correlated adjectives tend to have a high average rating, and the converse for negatively correlated adjectives. "
-            "Moreover, positevly correlated adjectives tend to be adjectives with a positive connotation, such as 'great', 'good', and 'amazing,' while the opposite is true for adjectives with a negative connotation. "
-            "This indicates that a the presence of a positive connotation adjective increases the chances of receiving a higher rating, while the presence of a negative connotation adjective increases the chances of receiving a lower rating. "
+            "As per the above table positively correlated adjectives tend to have a high average rating, and the converse "
+            "for negatively correlated adjectives. "
+            "Moreover, positively correlated adjectives tend to be adjectives with a positive connotation, such as 'great', " \
+            "'good', and 'amazing,' while the opposite is true for adjectives with a negative connotation. "
+            "This indicates that a the presence of a positive connotation adjective increases the chances of receiving a " \
+            "higher rating, while the presence of a negative connotation adjective increases the chances of " \
+            "receiving a lower rating. "
         )
     ], style={
         "padding": "0 5%",
