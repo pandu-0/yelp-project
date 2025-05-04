@@ -62,20 +62,50 @@ philly_restaurants = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/
 philly_restaurants['is_open'] = philly_restaurants['is_open'].map({1: "Open", 0: "Closed"})
 
 @callback(
-    Output('map-graph', 'figure'),
-    Input('color-radio', 'value')
+    Output("map-graph", "figure"),
+    Input("color-radio", "value")
 )
 def update_map(color_by):
+    df = philly_restaurants.copy()
+
+    # Drop null coordinates
+    df = df[df["latitude"].notnull() & df["longitude"].notnull()]
+
+    if color_by == "review_count":
+        bins = [0, 10, 50, 100, 250, 500, 1000, 2000, float("inf")]
+        labels = ["0-10", "10-50", "50-100", "100-250", "250-500", "500-1K", "1K-2K", "2K+"]
+
+        # Step 1: Cut and assign ordered category
+        df["review_bucket"] = pd.cut(
+            df["review_count"],
+            bins=bins,
+            labels=labels,
+            include_lowest=True
+        )
+
+        df["review_bucket"] = pd.Categorical(df["review_bucket"], categories=labels, ordered=False)
+
+        color_col = "review_bucket"
+
+        color_sequence = [
+            "#8b2c8e", "#68217a", "#2b0f54", "#471365", 
+            "#d85cb0", "#b03aa3", "#f89ac3", "#ffd1da"
+        ]
+    else:
+        color_col = color_by
+        color_sequence = None  # Let Plotly handle default
+
     fig = px.scatter_mapbox(
-        philly_restaurants,
+        df,
         lat="latitude",
         lon="longitude",
-        color=color_by,
+        color=color_col,
         hover_name="name",
         hover_data={"categories": True, "stars": True, "review_count": True},
-        zoom=11,
+        zoom=10,
         center={"lat": 39.9526, "lon": -75.1652},
-        height=600
+        height=600,
+        color_discrete_sequence=color_sequence
     )
 
     fig.update_layout(
@@ -84,8 +114,8 @@ def update_map(color_by):
         title=f"Philadelphia Restaurants Colored by {color_by.replace('_', ' ').title()}",
         title_x=0.5
     )
-    return fig
 
+    return fig
 
 # --------- Layout ---------
 layout = html.Div([
