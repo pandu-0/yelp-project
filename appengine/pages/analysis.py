@@ -2,7 +2,7 @@ from dash import html, dcc
 import dash
 import pandas as pd
 
-dash.register_page(__name__, path='/analysis', name='Analysis')
+dash.register_page(__name__, path='/analysis-methods', name='Analysis')
 
 df = pd.read_csv("https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/Adjective_correlation_rating")
 
@@ -18,59 +18,9 @@ table_rows = [
 ]
 
 layout = html.Div([
-    html.H1("Analysis", style={"fontWeight": "600"}),
 
-    html.H2("BERTopic Analysis", style={"fontWeight": "600"}),
-    # topics figure
-    html.H3("Topics Distance Map", style={"marginTop": "30px"}),
-    html.Div([
-        html.Iframe(
-            src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topics_fig.html",
-            style={
-                "width": "100%",
-                "height": "800px",
-                "border": "none",
-                "overflow": "hidden"
-            }
-        )
-    ], style={
-        "padding": "0 5%",
-        "marginBottom": "40px"
-    }),
 
-    # topics word scores figure
-    html.H3("Topic word scores figure", style={"marginTop": "30px"}),
-    html.Div([
-        html.Iframe(
-            src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topic_word_scores_fig.html",
-            style={
-                "width": "100%",
-                "height": "600px",
-                "border": "none",
-                "overflow": "hidden"
-            }
-        )
-    ], style={
-        "padding": "0 5%",
-        "marginBottom": "40px"
-    }),
-
-    # hierarchy tree figure
-    html.H3("Topics Hierarchy ", style={"marginTop": "30px"}),
-    html.Div([
-        html.Iframe(
-            src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/heirarchy_tree_fig.html",
-            style={
-                "width": "100%",
-                "height": "600px",
-                "border": "none",
-                "overflow": "hidden"
-            }
-        )
-    ], style={
-        "padding": "0 5%",
-        "marginBottom": "40px"
-    }),
+    html.H1("Analysis Methods", style={"fontWeight": "600"}),
 
     # description about the analysis
     html.H3("Adjective Correlation with Ratings", style={"marginTop": "30px"}),
@@ -119,6 +69,164 @@ layout = html.Div([
         "padding": "0 5%",
         "marginBottom": "40px"
     }),
+
+    # Preprocessing
+    html.H2("Preprocessing", style={"fontWeight": "600"}),
+    html.Div([
+        html.Ul([
+            html.Li("The Yelp dataset was mostly clean with minimal null values and duplicates."),
+            html.Li("There was a class imbalance between open and closed restaurants."),
+            html.Li("To address this, open restaurants were under-sampled to match the number of closed ones."),
+            html.Li("Text data was cleaned by removing stop words, punctuation, and applying lemmatization."),
+            html.Li("Manual cleaning was chosen over TF-IDF to reduce dataset size."),
+            html.Li("We noticed cleaning helped improve the clarity of the topics identified by the various models.")
+        ]),
+        # show the preprocessing code
+        html.Details([
+            html.Summary("Show Preprocessing Code"),
+            dcc.Markdown("""
+            ```python
+            import spacy
+            import pandas as pd
+            import re
+                         
+            # balance the dataset
+            philly_closed = philly_restaurant_reviews[philly_restaurant_reviews['is_open'] == 0]
+            philly_open = philly_restaurant_reviews[philly_restaurant_reviews['is_open'] == 1].sample(len(philly_closed), random_state=42)
+            philly_balanced = pd.concat([philly_closed, philly_open], axis=0)
+
+            # Load the small English model
+            nlp = spacy.load('en_core_web_sm')
+
+            def advanced_clean_text(text):
+                text = str(text).lower()  # Lowercase
+                text = re.sub(r'<.*?>', ' ', text)  # Remove HTML tags
+                text = re.sub(r'[^a-zA-Z\s]', '', text)  # Remove punctuation and numbers
+                text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
+
+                doc = nlp(text)
+                tokens = [
+                    token.lemma_ for token in doc 
+                    if not token.is_stop and not token.is_punct and token.is_alpha
+                ]
+                return ' '.join(tokens)
+
+            # Apply it to your review column
+            philly_balanced['clean_review'] = philly_balanced['review'].apply(advanced_clean_text)
+            ```
+            """)
+        ])
+    ], style={
+        "padding": "0 5%",
+        "marginBottom": "20px"
+    }),
+
+    html.H2("Topic Modeling", style={"fontWeight": "600"}),
+
+    html.H3("BERTopic Analysis", style={"fontWeight": "600"}),
+    # topics figure
+    html.H4("Topics Distance Map", style={"marginTop": "30px"}),
+    html.Div([
+        html.Iframe(
+            src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topics_fig.html",
+            style={
+                "width": "100%",
+                "height": "800px",
+                "border": "none",
+                "overflow": "hidden"
+            }
+        ),
+        html.Details([
+            html.Summary("Show Code"),
+            dcc.Markdown("""
+                ```python
+                from bertopic import BERTopic
+                # Sample reviews
+                reviews_sampled = philly_balanced_clean
+
+                # Convert sampled reviews to list
+                reviews = reviews_sampled['clean_review'].tolist()
+
+                # Create BERTopic model
+                topic_model = BERTopic(language="english", verbose=True)
+
+                # Fit model
+                topics, probs = topic_model.fit_transform(reviews)
+
+                # Add topics as a new column in the sampled DataFrame
+                reviews_sampled['topic'] = topics
+
+                # Show found topics
+                topic_info = topic_model.get_topic_info()
+                print("\\n=== Topics ===")
+                print(topic_info)
+
+                # Optionally show a few rows
+                print(reviews_sampled[['clean_review', 'topic']].head())
+                         
+                topic_model.visualize_topics().show()
+                ```
+            """)
+        ], style={"marginTop": "10px"})
+    ], style={
+        "padding": "0 5%",
+        "marginBottom": "40px"
+    }),
+
+    # topics word scores figure
+    # html.H4("Topic word scores figure", style={"marginTop": "30px"}),
+    # html.Div([
+    #     html.Iframe(
+    #         src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topic_word_scores_fig.html",
+    #         style={
+    #             "width": "100%",
+    #             "height": "600px",
+    #             "border": "none",
+    #             "overflow": "hidden"
+    #         }
+    #     )
+    # ], style={
+    #     "padding": "0 5%",
+    #     "marginBottom": "40px"
+    # }),
+
+    # hierarchy tree figure
+    html.H4("Topics Hierarchy ", style={"marginTop": "30px"}),
+    html.Div([
+        html.Iframe(
+            src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/heirarchy_tree_fig.html",
+            style={
+                "width": "100%",
+                "height": "600px",
+                "border": "none",
+                "overflow": "hidden"
+            }
+        ),
+        html.Details([
+            html.Summary("Show code"),
+            dcc.Markdown("""
+            ```python
+            topic_model.visualize_hierarchy().show()
+            ```
+            """)
+        ], style={"marginTop": "10px"})
+    ], style={
+        "padding": "0 5%",
+        "marginBottom": "40px"
+    }),
+
+    html.H5("BERTopic Insights:"),
+    html.P(
+        "Due to nature of BERTopic's deep learning approach to embedding documents, it can observed in the above topic clustering " \
+        "and Hierarchical representations that the model is powerful and extremely expressive; however, it has untended effects that " \
+        "we believe is not useful for our project objective. We simply want the model to find topics such as food, service, ambience, etc., " \
+        "but instead we noticed that BERTopic is too fine-grained and resorts to classifying the restaurants into categories of food " \
+        "such as tacos, pasta, pad thai. It's as if the model is sorting reviews into categories of food, which is we believe is not " \
+        "useful for our analysis."
+    ),
+
+
+
     html.Br(),
     dcc.Link(html.Button("Back to Home"), href="/"),
 

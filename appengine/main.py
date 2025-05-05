@@ -19,7 +19,7 @@ app.layout = html.Div([
         html.Div([
             dcc.Link("Home", href="/", style={"margin": "0 10px", "textDecoration": "none"}),
             dcc.Link("EDA", href="/eda", style={"margin": "0 10px", "textDecoration": "none"}),
-            dcc.Link("Analysis", href="/analysis", style={"margin": "0 10px", "textDecoration": "none"}),
+            dcc.Link("Analysis Methods", href="/analysis-methods", style={"margin": "0 10px", "textDecoration": "none"}),
             dcc.Link("Visualization", href="/visualization", style={"margin": "0 10px", "textDecoration": "none"}),
         ], style={"display": "flex", "gap": "15px"})
     ], style={
