@@ -1,6 +1,8 @@
-from dash import html, dcc
 import dash
+from dash import html, dcc, dash_table
 import pandas as pd
+import plotly.express as px
+from utils import get_json_from_gcs, load_pickle_from_gcs, GCLOUD_BUCKET
 
 dash.register_page(__name__, path='/analysis-methods', name='Analysis')
 
@@ -17,9 +19,29 @@ table_rows = [
     for i, row in pd.concat([top_5, bottom_5]).iterrows()
 ]
 
+# Load the saved model and vectorizer
+nmf_model = load_pickle_from_gcs(GCLOUD_BUCKET, "models/nmf_model/nmf_model.pkl")
+vectorizer = load_pickle_from_gcs(GCLOUD_BUCKET, "models/nmf_model/tfidf_vectorizer.pkl")
+
+# Extract feature names (vocabulary words)
+feature_names = vectorizer.get_feature_names_out()
+
+# Show top N words per topic
+no_top_words = 10
+nmf_topics = [
+    [feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]]
+    for topic in nmf_model.components_
+]
+
+topic_keywords = [" | ".join(words) for words in nmf_topics]
+
+# retrieve topics
+philly_nmf_topics = get_json_from_gcs(GCLOUD_BUCKET, "models/nmf_model/philly_balanced_with_sentiment_nmf_topics.json")
+
+# Pie chart
+topic_counts = philly_nmf_topics['topic'].value_counts().sort_index()
+
 layout = html.Div([
-
-
     html.H1("Analysis Methods", style={"fontWeight": "600"}),
 
     # description about the analysis
@@ -225,7 +247,30 @@ layout = html.Div([
         "useful for our analysis."
     ),
 
+    html.H2("NMF Topic Modeling", style={"fontWeight": "600"}),
 
+    html.Div([
+        html.Div([
+            html.H4("Top Keywords per Topic"),
+            dash_table.DataTable(
+                columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
+                data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
+                style_table={"overflowX": "auto"},
+                style_cell={"textAlign": "left", "padding": "5px"},
+                style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
+            )
+        ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
+
+        html.Div([
+            html.H4("Topic Distribution"),
+            dcc.Graph(figure=px.pie(
+                values=topic_counts.values,
+                names=[f"Topic {i}" for i in topic_counts.index],
+                title=None,
+                hole=0.3
+            ))
+        ], style={"width": "48%", "display": "inline-block", "paddingLeft": "2%"})
+    ], style={"padding": "0 5%", "marginBottom": "40px"}),
 
     html.Br(),
     dcc.Link(html.Button("Back to Home"), href="/"),

@@ -1,23 +1,10 @@
 import dash
 from dash import dcc, html, dash_table, Output, Input, callback
 import pandas as pd
-from google.cloud import storage
-import os
-from io import StringIO
 import plotly.express as px
+from utils import get_json_from_gcs, GCLOUD_BUCKET
 
 dash.register_page(__name__, path='/eda', name='EDA')
-
-# --------- Load JSON files ---------
-def get_json_from_gcs(bucket_name, source_blob_name):
-    """Downloads a blob from the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-
-    # Construct a client side representation of a blob.
-    blob = bucket.blob(source_blob_name)
-    data = blob.download_as_text()
-    return pd.read_json(StringIO(data), lines=True)
 
 # --------- Load JSON files ---------
 review_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/review_head.json',
@@ -45,18 +32,18 @@ checkin_preview = checkin_df.to_dict('records')
 
 # --------- Get statistics ---------
 unique_restaurants_count = 5852
-stars_summary = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/stars_describe.json")
+stars_summary = get_json_from_gcs(GCLOUD_BUCKET, "eda/stars_describe.json")
 stars_summary.columns = ['statistic', 'stars']  # Rename columns for nice table display
 
-stars_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/stars_count.json")
-is_open_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/is_open_count.json")
+stars_count = get_json_from_gcs(GCLOUD_BUCKET, "eda/stars_count.json")
+is_open_count = get_json_from_gcs(GCLOUD_BUCKET, "eda/is_open_count.json")
 
-restaurant_mean_stars = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/restaurant_mean_stars.json")
-restaurant_review_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/restaurant_review_count.json")
+restaurant_mean_stars = get_json_from_gcs(GCLOUD_BUCKET, "eda/restaurant_mean_stars.json")
+restaurant_review_count = get_json_from_gcs(GCLOUD_BUCKET, "eda/restaurant_review_count.json")
 
-year_and_is_open_count = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/year_and_is_open.json")
+year_and_is_open_count = get_json_from_gcs(GCLOUD_BUCKET, "eda/year_and_is_open.json")
 
-philly_restaurants = get_json_from_gcs("cs163-project-452620.appspot.com", "eda/philly_restaurants.json")
+philly_restaurants = get_json_from_gcs(GCLOUD_BUCKET, "eda/philly_restaurants.json")
 
 # Convert is_open to string for clarity
 philly_restaurants['is_open'] = philly_restaurants['is_open'].map({1: "Open", 0: "Closed"})
