@@ -5,3 +5,4 @@ Flask
 gunicorn
 google-cloud-storage
 joblib
+scikit-learn
