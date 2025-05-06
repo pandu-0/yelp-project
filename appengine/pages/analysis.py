@@ -1,5 +1,6 @@
+import numpy as np
 import dash
-from dash import html, dcc, dash_table
+from dash import html, dcc, dash_table, Input, Output, callback
 import pandas as pd
 import plotly.express as px
 from utils import get_json_from_gcs, load_pickle_from_gcs, GCLOUD_BUCKET
@@ -19,27 +20,58 @@ table_rows = [
     for i, row in pd.concat([top_5, bottom_5]).iterrows()
 ]
 
-# Load the saved model and vectorizer
-nmf_model = load_pickle_from_gcs(GCLOUD_BUCKET, "models/nmf_model/nmf_model.pkl")
+# load vectorizer
 vectorizer = load_pickle_from_gcs(GCLOUD_BUCKET, "models/nmf_model/tfidf_vectorizer.pkl")
 
-# Extract feature names (vocabulary words)
-feature_names = vectorizer.get_feature_names_out()
+topic_keywords = dict()
 
-# Show top N words per topic
-no_top_words = 10
-nmf_topics = [
-    [feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]]
-    for topic in nmf_model.components_
-]
+# Load the saved model
+for num_topics in [5, 7, 10, 20]:
+    nmf_model = load_pickle_from_gcs(GCLOUD_BUCKET, f"models/nmf_model/nmf_model_topics_{num_topics}.pkl")
 
-topic_keywords = [" | ".join(words) for words in nmf_topics]
+    # Extract feature names (vocabulary words)
+    feature_names = vectorizer.get_feature_names_out()
 
-# retrieve topics
-philly_nmf_topics = get_json_from_gcs(GCLOUD_BUCKET, "models/nmf_model/philly_balanced_with_sentiment_nmf_topics.json")
+    # Show top N words per topic
+    no_top_words = 10
+    nmf_topics = [
+        [feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]]
+        for topic in nmf_model.components_
+    ]
 
-# Pie chart
-topic_counts = philly_nmf_topics['topic'].value_counts().sort_index()
+    topic_keywords[num_topics] = [" | ".join(words) for words in nmf_topics]
+
+
+@callback(
+    Output('nmf-topics', 'data'),
+    Input('nmf-topic-radio', 'value')
+)
+def update_nmf_table(topic_count):
+    return [{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords[topic_count])]
+
+
+@callback(
+    Output("nmf-topics-pie", "figure"),
+    Input("nmf-topic-radio", "value")
+)
+def update_nmf_pie(num_topic):
+    philly_nmf_topics = get_json_from_gcs(GCLOUD_BUCKET, f"models/nmf_model/philly_nmf_topics_{num_topic}.json")
+
+    topic_counts = philly_nmf_topics.value_counts().sort_values(ascending=False)  # Sort by count, not index
+
+    fig = px.pie(
+        values=topic_counts.values,
+        names=[f"Topic {i}" for i in topic_counts.index],  # Descriptive labels
+        title=None,
+        hole=0.3
+    )
+
+    fig.update_layout(
+        legend_title_text="Topic Number"
+    )
+    
+    return fig
+
 
 layout = html.Div([
     html.H1("Analysis Methods", style={"fontWeight": "600"}),
@@ -147,7 +179,7 @@ layout = html.Div([
 
     html.H3("BERTopic Analysis", style={"fontWeight": "600"}),
     # topics figure
-    html.H4("Topics Distance Map", style={"marginTop": "30px"}),
+    html.H3("Topics Distance Map", style={"marginTop": "30px"}),
     html.Div([
         html.Iframe(
             src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topics_fig.html",
@@ -196,24 +228,24 @@ layout = html.Div([
     }),
 
     # topics word scores figure
-    # html.H4("Topic word scores figure", style={"marginTop": "30px"}),
-    # html.Div([
-    #     html.Iframe(
-    #         src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topic_word_scores_fig.html",
-    #         style={
-    #             "width": "100%",
-    #             "height": "600px",
-    #             "border": "none",
-    #             "overflow": "hidden"
-    #         }
-    #     )
-    # ], style={
-    #     "padding": "0 5%",
-    #     "marginBottom": "40px"
-    # }),
+    html.H3("Topic word scores figure", style={"marginTop": "30px"}),
+    html.Div([
+        html.Iframe(
+            src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topic_word_scores_fig.html",
+            style={
+                "width": "100%",
+                "height": "600px",
+                "border": "none",
+                "overflow": "hidden"
+            }
+        )
+    ], style={
+        "padding": "0 5%",
+        "marginBottom": "40px"
+    }),
 
     # hierarchy tree figure
-    html.H4("Topics Hierarchy ", style={"marginTop": "30px"}),
+    html.H3("Topics Hierarchy ", style={"marginTop": "30px"}),
     html.Div([
         html.Iframe(
             src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/heirarchy_tree_fig.html",
@@ -237,7 +269,7 @@ layout = html.Div([
         "marginBottom": "40px"
     }),
 
-    html.H5("BERTopic Insights:"),
+    html.H3("BERTopic Insights:"),
     html.P(
         "Due to nature of BERTopic's deep learning approach to embedding documents, it can observed in the above topic clustering " \
         "and Hierarchical representations that the model is powerful and extremely expressive; however, it has untended effects that " \
@@ -247,29 +279,68 @@ layout = html.Div([
         "useful for our analysis."
     ),
 
-    html.H2("NMF Topic Modeling", style={"fontWeight": "600"}),
+    html.H2("Non-negative Matrix Factorization (NMF) Topic Modeling", style={"fontWeight": "600"}),
+
+    # html.Div([
+    #     html.Div([
+    #         html.H4("Top Keywords per Topic"),
+    #         dash_table.DataTable(
+    #             columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
+    #             data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
+    #             style_table={"overflowX": "auto"},
+    #             style_cell={"textAlign": "left", "padding": "5px"},
+    #             style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
+    #         )
+    #     ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
+
+    #     html.Div([
+    #         html.H4("Topic Distribution"),
+    #         dcc.Graph(figure=px.pie(
+    #             values=topic_counts.values,
+    #             names=[f"Topic {i}" for i in topic_counts.index],
+    #             title=None,
+    #             hole=0.3
+    #         ))
+    #     ], style={"width": "48%", "display": "inline-block", "paddingLeft": "2%"}),
+
+
+    #     html.H4("NMF Insights:"),
+    #     html.P("NMF is a more interpretable model compared to BERTopic as it does not use deep learning techniques")
+    # ], style={"padding": "0 5%", "marginBottom": "40px"}),
 
     html.Div([
         html.Div([
-            html.H4("Top Keywords per Topic"),
+            html.Label("Select Topic Count:", style={"fontWeight": "bold", "fontSize": "16px"}),
+            dcc.RadioItems(
+                id="nmf-topic-radio",
+                options=[
+                    {"label": "5", "value": 5},
+                    {"label": "7", "value": 7},
+                    {"label": "10", "value": 10},
+                    {"label": "20", "value" : 20}
+                ],
+                value=5,
+                labelStyle={"display": "inline-block", "margin-right": "15px"},
+                inputStyle={"margin-right": "6px"},
+                style={"margin-bottom": "10px"},
+            ),
             dash_table.DataTable(
+                id="nmf-topics",
                 columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
-                data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
+                data=[],
                 style_table={"overflowX": "auto"},
                 style_cell={"textAlign": "left", "padding": "5px"},
                 style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
-            )
+            ),
+            # html.P("The map shows the restaurants in Philadelphia by open status, star rating, and review count. "
+            #        "By hovering over the dots, more information, such as the name of the restaurant and category, can be seen. "
+            #        , 
+            #        style={"marginTop": "10px", "fontSize": "17px"})
         ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
 
         html.Div([
-            html.H4("Topic Distribution"),
-            dcc.Graph(figure=px.pie(
-                values=topic_counts.values,
-                names=[f"Topic {i}" for i in topic_counts.index],
-                title=None,
-                hole=0.3
-            ))
-        ], style={"width": "48%", "display": "inline-block", "paddingLeft": "2%"})
+            dcc.Graph(id='nmf-topics-pie')
+        ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"})
     ], style={"padding": "0 5%", "marginBottom": "40px"}),
 
     html.Br(),
