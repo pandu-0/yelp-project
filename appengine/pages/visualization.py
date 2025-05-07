@@ -86,7 +86,7 @@ layout = html.Div([
         dcc.Graph(id='correlation-graph'),
     ]),
 
-    html.H3("Topics Modeling Analysis"),
+    html.H3("NMF Topics Modeling Analysis"),
     html.Div([
         html.Div([
             dash_table.DataTable(
