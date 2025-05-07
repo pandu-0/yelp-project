@@ -325,7 +325,20 @@ layout = html.Div([
 
         html.Div([
             dcc.Graph(id='nmf-topics-pie')
-        ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"})
+        ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
+    html.H2("Correlation Between Open Status and Average Rating", style={"fontWeight": "600"}),
+    html.Div([
+        html.P(
+            "We calculated the Pearson corelation value between open status and average rating was got a value of 0.054492. "
+            "Since the value was statistically insignifacnt, we conducted a t-test. After conducting a t-test, we obtained a p-value of 0, which seemed odd. After digging deeper, "
+            "we realized this was due to the large number of columns in the dataset. To handle this, we used a random sampled dataset of a 1000 rows  "
+            "and obtained a p-value of 0.037, which is less than an alpha value of 0.05. "
+            "This indicated that the correlation value was statistically significant."
+        )
+    ], style={
+        
+        "marginBottom": "40px"
+    }),
     ], style={"padding": "0 5%", "marginBottom": "40px"}),
 
     html.Br(),
