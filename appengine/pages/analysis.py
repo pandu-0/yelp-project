@@ -327,4 +327,43 @@ layout = html.Div([
     html.Br(),
     dcc.Link(html.Button("Back to Home"), href="/"),
 
+    # Key Insights Section
+    html.H3("Key Insights", style={"marginTop": "40px"}),
+    html.Ul([
+        html.Li([
+            "Adjectives with a ",
+            html.Strong("positive connotation"),
+            " tend to correlate with ",
+            html.Strong("higher ratings"),
+            ", while those with a ",
+            html.Strong("negative connotation"),
+            " tend to correlate with ",
+            html.Strong("lower ratings"),
+            "."
+        ]),
+        html.Li([
+            "Even though BERTopic was comprehensive, its ",
+            html.Strong("fine-grained classification"),
+            " wasn't ideal for identifying broader topics like ",
+            html.Strong("food"),
+            ", ",
+            html.Strong("service"),
+            ", and ",
+            html.Strong("ambience"),
+            "."
+        ]),
+        html.Li([
+            "NMF topic modeling provides a more ",
+            html.Strong("generalized view"),
+            " of topics, making it better suited."
+        ])
+    ], style={
+        "backgroundColor": "#f8f8f8",
+        "padding": "20px",
+        "borderRadius": "10px",
+        "fontFamily": "Poppins, sans-serif",
+        "lineHeight": "1.8",
+        "marginTop": "20px"
+    }),
+
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
