@@ -86,31 +86,46 @@ layout = html.Div([
         dcc.Graph(id='correlation-graph'),
     ]),
 
+    html.H3("Topics Modeling Analysis"),
     html.Div([
-        html.H3("Topics Modeling Analysis"),
-        dash_table.DataTable(
-            columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
-            data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
-            style_table={"overflowX": "auto"},
-            style_cell={"textAlign": "left", "padding": "5px"},
-            style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
-        ),
-        html.Img(
-            src="https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/mean_rating_over_topic_7_open_status_plot.svg",
-            style={'width': '100%', 'height': 'auto'}
-        ) 
-    ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
-
-    html.Div([
-        html.Img(
-            src="https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/mean_rating_over_year_topic_7_plot.svg",
-            style={'width': '100%', 'height': 'auto'}
-        )
-
+        html.Div([
+            dash_table.DataTable(
+                columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
+                data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
+                style_table={"overflowX": "auto"},
+                style_cell={"textAlign": "left", "padding": "5px"},
+                style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
+            )
+        ], style={
+            "overflowX": "auto",
+            "whiteSpace": "nowrap",
+            "width": "100%",
+            "paddingBottom": "20px"
+        }),
+        html.Div([
+            html.Img(
+                src="https://raw.githubusercontent.com/pandu-0/yelp-project/main/assets/mean_rating_over_topic_7_open_status_plot.svg",
+                style={'maxWidth': '100%', 'height': 'auto'}
+            )
+        ], style={
+            "overflowX": "auto",
+            "whiteSpace": "nowrap",
+            "width": "100%",
+            "paddingBottom": "20px"
+        }),
     ], style={
+        "display": "flex",
         "padding": "0 5%",
+        "gap": "20px",
         "marginBottom": "40px"
     }),
+
+    html.Div([
+        html.Img(
+            src="https://raw.githubusercontent.com/pandu-0/yelp-project/main/assets/mean_rating_over_year_topic_7_plot.svg",
+            style={'width': '100%', 'height': 'auto'}
+        )
+    ], style={"width": "100%", "display": "inline-block", "verticalAlign": "top"}),
 
     html.Br(),
     dcc.Link(html.Button("Back to Home"), href="/")
