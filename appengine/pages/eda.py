@@ -533,6 +533,45 @@ layout = html.Div([
                "By hovering over the dots, more infomation, such as the name of the resturant and category, can be seen. "
                , 
                style={"marginTop": "10px", "fontSize": "17px"})
-    ])
+    ]),
+    html.H3("Key Insights", style={"marginTop": "40px"}),
+    html.Ul([
+        html.Li([
+            "The majority of restaurants have a mean star rating between ",
+            html.Strong("3.5 and 4.5"),
+            ", indicating generally positive reviews."
+        ]),
+        html.Li([
+            html.Strong("5-star ratings"),
+            " are the most common, showing a tendency for customers to leave high ratings."
+        ]),
+        html.Li([
+            "Most reviews are from ",
+            html.Strong("open restaurants"),
+            ", suggesting that active businesses receive more customer engagement."
+        ]),
+        html.Li([
+            "The number of reviews per restaurant is highly skewed, with many restaurants having fewer than ",
+            html.Strong("40 reviews"),
+            "."
+        ]),
+        html.Li([
+            "The majority of reviews were written between ",
+            html.Strong("2014 and 2019"),
+            ", with open restaurants dominating the review counts."
+        ]),
+        html.Li([
+            "Philadelphia restaurants are well-distributed geographically, with review counts varying significantly across ",
+            html.Strong("locations"),
+            "."
+        ])
+    ], style={
+        "backgroundColor": "#f8f8f8",
+        "padding": "20px",
+        "borderRadius": "10px",
+        "fontFamily": "Poppins, sans-serif",
+        "lineHeight": "1.8",
+        "marginTop": "20px"
+    })
     
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
