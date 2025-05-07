@@ -1,8 +1,9 @@
-from dash import html, dcc
+from dash import html, dcc, dash_table
 from dash.dependencies import Input, Output
 import dash
 import pandas as pd
 import plotly.express as px
+from utils import load_pickle_from_gcs, GCLOUD_BUCKET
 
 dash.register_page(__name__, path='/visualization', name='Visualization')
 df = pd.read_csv('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/Adjective_correlation_rating')
@@ -45,25 +46,71 @@ def update_graph(selected_group):
 
     return fig
 
+# load vectorizer
+vectorizer = load_pickle_from_gcs(GCLOUD_BUCKET, "models/nmf_model/tfidf_vectorizer.pkl")
+
+# Load the saved mode
+nmf_model = load_pickle_from_gcs(GCLOUD_BUCKET, f"models/nmf_model/nmf_model_topics_7.pkl")
+
+# Extract feature names (vocabulary words)
+feature_names = vectorizer.get_feature_names_out()
+
+# Show top N words per topic
+no_top_words = 10
+nmf_topics = [
+    [feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]]
+    for topic in nmf_model.components_
+]
+
+topic_keywords = [" | ".join(words) for words in nmf_topics]
+
 
 # App layout
 layout = html.Div([
     html.H2("Visualization"),
 
-    html.Label("Select Adjective Group:"),
-    dcc.RadioItems(
-        id='group-selector',
-        options=[
-            {'label': 'Top 5', 'value': 'top5'},
-            {'label': 'Bottom 5', 'value': 'bottom5'},
-            {'label': 'Both', 'value': 'both'}
-        ],
-        value='both',  # default selected
-        inline=True,
-        style={"marginBottom": "20px"}
-    ),
+    html.Div([
+        html.Label("Select Adjective Group:"),
+        dcc.RadioItems(
+            id='group-selector',
+            options=[
+                {'label': 'Top 5', 'value': 'top5'},
+                {'label': 'Bottom 5', 'value': 'bottom5'},
+                {'label': 'Both', 'value': 'both'}
+            ],
+            value='both',  # default selected
+            inline=True,
+            style={"marginBottom": "20px"}
+        ),
 
-    dcc.Graph(id='correlation-graph'),
+        dcc.Graph(id='correlation-graph'),
+    ]),
+
+    html.Div([
+        html.H3("Topics Modeling Analysis"),
+        dash_table.DataTable(
+            columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
+            data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
+            style_table={"overflowX": "auto"},
+            style_cell={"textAlign": "left", "padding": "5px"},
+            style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
+        ),
+        html.Img(
+            src="https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/mean_rating_over_topic_7_open_status_plot.svg",
+            style={'width': '100%', 'height': 'auto'}
+        ) 
+    ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
+
+    html.Div([
+        html.Img(
+            src="https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/mean_rating_over_year_topic_7_plot.svg",
+            style={'width': '100%', 'height': 'auto'}
+        )
+
+    ], style={
+        "padding": "0 5%",
+        "marginBottom": "40px"
+    }),
 
     html.Br(),
     dcc.Link(html.Button("Back to Home"), href="/")
