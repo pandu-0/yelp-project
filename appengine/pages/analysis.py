@@ -183,6 +183,12 @@ layout = html.Div([
         )
     ]),
 
+    html.P(
+        "The above plot shows the distribution of sentiment probabilities for each star rating. "
+        "We can see that the model works because it assigns higher positivity probability to high "
+        "ratings and lower positivity probability to low ratings. "
+        "This is a good sign that the model is working as intended. "),
+
     html.H2("Topic Modeling", style={"fontWeight": "600", "textAlign": "center"}),
 
     html.H3("BERTopic Analysis", style={"fontWeight": "600"}),
