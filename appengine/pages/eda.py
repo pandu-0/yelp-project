@@ -561,7 +561,7 @@ layout = html.Div([
             ", with open restaurants dominating the review counts."
         ]),
         html.Li([
-            "Philadelphia restaurants are well-distributed geographically, with review counts varying significantly across ",
+            "Philadelphia restaurants are concentrated in the metropolitan areas of the city",
             html.Strong("locations"),
             "."
         ])
