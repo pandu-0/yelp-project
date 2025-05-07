@@ -1,21 +1,22 @@
-import numpy as np
 import dash
 from dash import html, dcc, dash_table, Input, Output, callback
 import pandas as pd
 import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 from utils import get_json_from_gcs, load_pickle_from_gcs, GCLOUD_BUCKET
 
 dash.register_page(__name__, path='/analysis-methods', name='Analysis')
 
-df = pd.read_csv("https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/Adjective_correlation_rating")
+adjective_corr_df = pd.read_csv("https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/Adjective_correlation_rating")
 
-df["Correlation"] = df["Correlation"].round(2)
-df["average_rating"] = df["average_rating"].round(2)
+adjective_corr_df["Correlation"] = adjective_corr_df["Correlation"].round(2)
+adjective_corr_df["average_rating"] = adjective_corr_df["average_rating"].round(2)
 
-top_5 = df.sort_values(by="Correlation", ascending=False).head(5)
-bottom_5 = df.sort_values(by="Correlation", ascending=False).tail(5)
+top_5 = adjective_corr_df.sort_values(by="Correlation", ascending=False).head(5)
+bottom_5 = adjective_corr_df.sort_values(by="Correlation", ascending=False).tail(5)
 
-table_rows = [
+adj_corr_table_rows = [
     html.Tr([html.Td(row["Adjective"]), html.Td(row["Correlation"]), html.Td(row["average_rating"])])
     for i, row in pd.concat([top_5, bottom_5]).iterrows()
 ]
@@ -41,6 +42,7 @@ for num_topics in [5, 7, 10, 20]:
 
     topic_keywords[num_topics] = [" | ".join(words) for words in nmf_topics]
 
+philly_balanced_clean = get_json_from_gcs(GCLOUD_BUCKET, "analysis/philly_balanced_with_sentiment_probs_and_no_review.json")
 
 @callback(
     Output('nmf-topics', 'data'),
@@ -72,7 +74,6 @@ def update_nmf_pie(num_topic):
     
     return fig
 
-
 layout = html.Div([
     html.H1("Analysis Methods", style={"fontWeight": "600"}),
 
@@ -102,7 +103,7 @@ layout = html.Div([
                     html.Th("Average Rating")
                 ])
             ),
-            html.Tbody(table_rows)
+            html.Tbody(adj_corr_table_rows)
         ], style={
             "width": "80%",
             "margin": "0 auto",
@@ -174,6 +175,15 @@ layout = html.Div([
         "padding": "0 5%",
         "marginBottom": "20px"
     }),
+
+    html.H2("Sentiment Analysis", style={"fontWeight" : "600"}),
+    html.Div([
+        html.H3("Sentiment Probability by Star Rating"),
+        html.Img(
+            src="https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/sentiment_plot.svg",
+            style={'width': '100%', 'height': 'auto'}
+        )
+    ]),
 
     html.H2("Topic Modeling", style={"fontWeight": "600"}),
 
@@ -280,34 +290,6 @@ layout = html.Div([
     ),
 
     html.H2("Non-negative Matrix Factorization (NMF) Topic Modeling", style={"fontWeight": "600"}),
-
-    # html.Div([
-    #     html.Div([
-    #         html.H4("Top Keywords per Topic"),
-    #         dash_table.DataTable(
-    #             columns=[{"name": "Topic", "id": "Topic"}, {"name": "Top Words", "id": "Words"}],
-    #             data=[{"Topic": f"Topic {i}", "Words": kw} for i, kw in enumerate(topic_keywords)],
-    #             style_table={"overflowX": "auto"},
-    #             style_cell={"textAlign": "left", "padding": "5px"},
-    #             style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
-    #         )
-    #     ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
-
-    #     html.Div([
-    #         html.H4("Topic Distribution"),
-    #         dcc.Graph(figure=px.pie(
-    #             values=topic_counts.values,
-    #             names=[f"Topic {i}" for i in topic_counts.index],
-    #             title=None,
-    #             hole=0.3
-    #         ))
-    #     ], style={"width": "48%", "display": "inline-block", "paddingLeft": "2%"}),
-
-
-    #     html.H4("NMF Insights:"),
-    #     html.P("NMF is a more interpretable model compared to BERTopic as it does not use deep learning techniques")
-    # ], style={"padding": "0 5%", "marginBottom": "40px"}),
-
     html.Div([
         html.Div([
             html.Label("Select Topic Count:", style={"fontWeight": "bold", "fontSize": "16px"}),
@@ -332,10 +314,9 @@ layout = html.Div([
                 style_cell={"textAlign": "left", "padding": "5px"},
                 style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
             ),
-            # html.P("The map shows the restaurants in Philadelphia by open status, star rating, and review count. "
-            #        "By hovering over the dots, more information, such as the name of the restaurant and category, can be seen. "
-            #        , 
-            #        style={"marginTop": "10px", "fontSize": "17px"})
+            html.P("The map shows the restaurants in Philadelphia by open status, star rating, and review count. "
+                   "By hovering over the dots, more information, such as the name of the restaurant and category, can be seen. ", 
+                   style={"marginTop": "10px", "fontSize": "17px"})
         ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
 
         html.Div([

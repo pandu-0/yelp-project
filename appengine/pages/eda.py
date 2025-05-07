@@ -7,20 +7,20 @@ from utils import get_json_from_gcs, GCLOUD_BUCKET
 dash.register_page(__name__, path='/eda', name='EDA')
 
 # --------- Load JSON files ---------
-review_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/review_head.json',
+review_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/review_head.json',
                         lines=True)
-user_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/user_head.json',
+user_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/user_head.json',
                         lines=True)
-tips_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/tips_head.json',
+tips_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/tips_head.json',
                         lines=True)
 
-business_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/business_head.json',
+business_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/business_head.json',
                         lines=True)
 # Convert nested columns to strings (if don't do this, it causes issues with displaying in DataTable)
 business_df['attributes'] = business_df['attributes'].astype(str)
 business_df['hours'] = business_df['hours'].astype(str)
 
-checkin_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/preview_datasets/checkin_head.json',
+checkin_df = pd.read_json('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/checkin_head.json',
                         lines=True)
 
 # show a few rows (head) for preview
