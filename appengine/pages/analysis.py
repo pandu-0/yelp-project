@@ -2,8 +2,6 @@ import dash
 from dash import html, dcc, dash_table, Input, Output, callback
 import pandas as pd
 import plotly.express as px
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 from utils import get_json_from_gcs, load_pickle_from_gcs, GCLOUD_BUCKET
 
 dash.register_page(__name__, path='/analysis-methods', name='Analysis')
