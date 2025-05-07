@@ -176,7 +176,7 @@ layout = html.Div([
         "marginBottom": "20px"
     }),
 
-    html.H2("Sentiment Analysis", style={"fontWeight" : "600"}),
+    html.H2("Sentiment Analysis", style={"fontWeight": "600", "textAlign": "center"}),
     html.Div([
         html.H3("Sentiment Probability by Star Rating"),
         html.Img(
@@ -185,7 +185,7 @@ layout = html.Div([
         )
     ]),
 
-    html.H2("Topic Modeling", style={"fontWeight": "600"}),
+    html.H2("Topic Modeling", style={"fontWeight": "600", "textAlign": "center"}),
 
     html.H3("BERTopic Analysis", style={"fontWeight": "600"}),
     # topics figure
