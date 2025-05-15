@@ -53,10 +53,7 @@ it using the `opendatasets` library in our scripts. This will eliminate the need
 │       └── home.py             # Home page
 
 ```
-The above directory tree depicts the structure of the appengine folder. The appengine folder hosts all the code for the website. The `main.py` file should be run to see the website in debug mode.
-
-> [!NOTE]  
-Please know that running `main.py` would not work for 
+The above directory tree depicts the structure of the `appengine` directory. The `appengine` directory hosts all the code for the website to be used by Google Cloud App Engine API.
 
 ### Assets
 ```
