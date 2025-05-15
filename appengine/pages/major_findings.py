@@ -85,6 +85,24 @@ layout = html.Div([
         dcc.Graph(id='correlation-graph'),
     ]),
 
+    html.Div([
+        html.H4("Correlation Between Adjectives and Ratings"),
+
+        html.P("The correlation between adjectives and ratings was analyzed using the Pearson correlation coefficient. " \
+                "The analysis revealed that adjectives with a positive connotation tend to have a positive correlation with ratings, " \
+                "while adjectives with a negative connotation tend to have a negative correlation with ratings. ",
+                style={"lineHeight": "1.6", "marginBottom": "10px"}),
+
+    ], style={
+        "backgroundColor": "#f8f8f8",
+        "padding": "20px",
+        "fontFamily": "Poppins, sans-serif",
+        "lineHeight": "1.8",
+        "marginTop": "20px",
+        "borderLeft": "4px solid #d9534f",
+        "marginBottom" : "20px"
+    }),
+
     html.H3("NMF Topics Modeling Analysis"),
     html.Div([
         html.Div([

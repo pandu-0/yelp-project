@@ -1,6 +1,6 @@
 # Yelp Project
 
-This repository contains the code and resources for our **Restaurant Review Project**. The aim of this project is to analyze customer reviews of restaurants and measure quality in a quantifiable manner. Using natural language processing (e.g., sentiment analysis), we examine reviews to uncover satisfaction patterns and identify key concerns. We use average review scores, sentiment polarity, and topic modeling across Yelp and Google restaurant datasets to provide insights for both customers and businesses.
+This repository contains the code and resources for our **Restaurant Review Project**. The aim of this project is to analyze customer reviews of restaurants and measure quality in a quantifiable manner. Using natural language processing (e.g., sentiment analysis), we examine reviews to uncover satisfaction patterns and identify key concerns. We use average review scores, sentiment polarity, and topic modeling across Yelp review datasets to provide insights for both customers and businesses.
 
 **Dataset:** https://business.yelp.com/data/resources/open-dataset/
 
@@ -23,6 +23,7 @@ The following Python packages are required for this project:
 
 - `dash`
 - `plotly`
+- `pyspark`
 - `pandas`
 - `Flask`
 - `gunicorn`
@@ -32,6 +33,12 @@ The following Python packages are required for this project:
 
 These packages can be installed using the `requirements.txt` file provided.
 
+## ML Pipeline
+**Step 1:** The pipline begins with the preprocessing script where we take the original dataset and filter the dataset down to only include Phildelphia reviews. 
+**Step 2:** Then we move onto the EDA script where we used the dataset created in the previous step to conduct exploratory data analysis to learn more about the data and what we're working with. 
+**Step 3:** Once we finished our EDA, we did some more preprocessing, topic modeling, and testing in the topic modeling and BerTopic testing scripts.
+**Step 4:** After the topic modeling, we did some sentiment analysis in the sentiment analysis script. 
+**Step 5:** Finally to wrap things up, we did some conlusionary analysis based on the sentiment analysis and topic modeling results from the previous steps. 
 
 ## Directory Information
 
@@ -45,7 +52,7 @@ These packages can be installed using the `requirements.txt` file provided.
 │   └── pages/                  # Website page folder
 │       ├── analysis.py         # Analysis page
 │       ├── eda.py              # EDA page
-│       ├── visualization.py    # Visualization page
+│       ├── major_findings.py   # Major findings page
 │       └── home.py             # Home page
 
 ```
