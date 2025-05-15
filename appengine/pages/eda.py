@@ -106,134 +106,171 @@ def update_map(color_by):
 
 # --------- Layout ---------
 layout = html.Div([
-    html.H1("Exploratory Data Analysis", style={"fontWeight": "600"}),
+    html.H1("Exploratory Data Analysis", style={
+        "fontWeight": 900,
+        "marginBottom": "8px",
+        "color": "#a94442",
+        "fontSize": "2.7rem",
+        "fontFamily": "'Poppins', sans-serif",
+        "letterSpacing": "1.5px",
+        "textShadow": "1px 2px 8px #fbeee6"
+    }),
 
-    html.H3("Yelp Dataset Summary:", style={"marginTop": "30px"}),
-    html.P(html.Span(["The Yelp Open dataset comes with 5 files in ", html.Code("json"), " format:", ])),
+    html.H3("Yelp Dataset Summary:", style={
+        "color": "#a94442",
+        "marginTop": 0,
+        "fontWeight": 800,
+        "borderLeft": "6px solid #a94442",
+        "paddingLeft": "1rem",
+        "fontSize": "1.5rem"
+    }),
+    html.P(html.Span([
+        "The Yelp Open dataset comes with 5 files in ", html.Code("json"), " format:"
+    ])),
     html.Ul([
         html.Li(html.Span([html.Code("Review"), " : contains reviews and related data left by a customer for a business"])),
         html.Li(html.Span([html.Code("User"), " : contains the users and their profile information"])),
         html.Li(html.Span([html.Code("Tips"), " : contains tip or comment left by a user for a business"])),
         html.Li(html.Span([html.Code("Business"), " : contains information about the business and reviews"])),
         html.Li(html.Span([html.Code("check-in"), " : contains check-in information for businesses"])),
-    ], style={"paddingLeft": "20px"}),
+    ], style={
+        "marginBottom": "1.7rem",
+        "background": "#fff",
+        "borderRadius": "0.9rem",
+        "padding": "1.2rem 2rem",
+        "boxShadow": "0 2px 8px #fbeee633"
+    }),
 
-    html.H3("Preview of Datasets", style={"marginTop": "30px"}),
-
-    html.Div([
-        html.H4("Review Table:"),
-        dash_table.DataTable(
-            data=review_preview,
-            page_size=5,
-            style_table={'overflowX': 'auto', 'minWidth': '100%'},
-            style_cell={
-                'textAlign': 'left',
-                'fontFamily': 'Poppins, sans-serif',
-                'fontSize': '14px',
-                'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-                'whiteSpace': 'nowrap'  # <-- this forces one-line text, no wrapping
-            },
-            style_header={
-                'fontWeight': 'bold',
-                'backgroundColor': '#f0f0f0'
-            }
-        ),
-    ], style={"marginBottom": "40px"}),
+    html.H3("Preview of Datasets", style={
+        "marginTop": "30px",
+        "color": "#a94442",
+        "fontWeight": 800,
+        "borderLeft": "6px solid #a94442",
+        "paddingLeft": "1rem",
+        "fontSize": "1.5rem"
+    }),
 
     html.Div([
-        html.H4("User Table:"),
-        dash_table.DataTable(
-            data=user_preview,
-            page_size=5,
-            style_table={'overflowX': 'auto', 'minWidth': '100%'},
-            style_cell={
-                'textAlign': 'left',
-                'fontFamily': 'Poppins, sans-serif',
-                'fontSize': '14px',
-                'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-                'whiteSpace': 'nowrap'  # <-- this forces one-line text, no wrapping
-            },
-            style_header={
-                'fontWeight': 'bold',
-                'backgroundColor': '#f0f0f0'
-            }
-        ),
-    ], style={"marginBottom": "40px"}),
+        html.Div([
+            html.H4("Review Table:"),
+            dash_table.DataTable(
+                data=review_preview,
+                page_size=5,
+                style_table={'overflowX': 'auto', 'minWidth': '100%'},
+                style_cell={
+                    'textAlign': 'left',
+                    'fontFamily': 'Poppins, sans-serif',
+                    'fontSize': '14px',
+                    'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap'
+                },
+                style_header={
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#f0f0f0'
+                }
+            ),
+        ], style={"marginBottom": "40px"}),
 
-    html.Div([
-        html.H4("Tips Table:"),
-        dash_table.DataTable(
-            data=tips_preview,
-            page_size=5,
-            style_table={'overflowX': 'auto', 'minWidth': '100%'},
-            style_cell={
-                'textAlign': 'left',
-                'fontFamily': 'Poppins, sans-serif',
-                'fontSize': '14px',
-                'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-                'whiteSpace': 'nowrap'  # <-- this forces one-line text, no wrapping
-            },
-            style_header={
-                'fontWeight': 'bold',
-                'backgroundColor': '#f0f0f0'
-            }
-        ),
-    ], style={"marginBottom": "40px"}),
+        html.Div([
+            html.H4("User Table:"),
+            dash_table.DataTable(
+                data=user_preview,
+                page_size=5,
+                style_table={'overflowX': 'auto', 'minWidth': '100%'},
+                style_cell={
+                    'textAlign': 'left',
+                    'fontFamily': 'Poppins, sans-serif',
+                    'fontSize': '14px',
+                    'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap'
+                },
+                style_header={
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#f0f0f0'
+                }
+            ),
+        ], style={"marginBottom": "40px"}),
 
-    html.Div([
-        html.H4("Business Table: "),
-        dash_table.DataTable(
-            data=business_preview,
-            page_size=5,
-            style_table={'overflowX': 'auto', 'minWidth': '100%'},
-            style_cell={
-                'textAlign': 'left',
-                'fontFamily': 'Poppins, sans-serif',
-                'fontSize': '14px',
-                'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-                'whiteSpace': 'nowrap'  # <-- this forces one-line text, no wrapping
-            },
-            style_header={
-                'fontWeight': 'bold',
-                'backgroundColor': '#f0f0f0'
-            }
-        ),
-    ], style={"marginBottom": "40px"}),
+        html.Div([
+            html.H4("Tips Table:"),
+            dash_table.DataTable(
+                data=tips_preview,
+                page_size=5,
+                style_table={'overflowX': 'auto', 'minWidth': '100%'},
+                style_cell={
+                    'textAlign': 'left',
+                    'fontFamily': 'Poppins, sans-serif',
+                    'fontSize': '14px',
+                    'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap'
+                },
+                style_header={
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#f0f0f0'
+                }
+            ),
+        ], style={"marginBottom": "40px"}),
 
-    html.Div([
-        html.H4("Check-in Table:"),
-        dash_table.DataTable(
-            data=checkin_preview,
-            page_size=5,
-            style_table={'overflowX': 'auto', 'minWidth': '100%'},
-            style_cell={
-                'textAlign': 'left',
-                'fontFamily': 'Poppins, sans-serif',
-                'fontSize': '14px',
-                'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-                'whiteSpace': 'nowrap'  # <-- this forces one-line text, no wrapping
-            },
-            style_header={
-                'fontWeight': 'bold',
-                'backgroundColor': '#f0f0f0'
-            }
-        ),
-    ], style={"marginBottom": "40px"}),
+        html.Div([
+            html.H4("Business Table:"),
+            dash_table.DataTable(
+                data=business_preview,
+                page_size=5,
+                style_table={'overflowX': 'auto', 'minWidth': '100%'},
+                style_cell={
+                    'textAlign': 'left',
+                    'fontFamily': 'Poppins, sans-serif',
+                    'fontSize': '14px',
+                    'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap'
+                },
+                style_header={
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#f0f0f0'
+                }
+            ),
+        ], style={"marginBottom": "40px"}),
 
-        # ------- Display Statistics -------
-    html.H3("Dataset Statistics", style={"marginTop": "40px"}),
+        html.Div([
+            html.H4("Check-in Table:"),
+            dash_table.DataTable(
+                data=checkin_preview,
+                page_size=5,
+                style_table={'overflowX': 'auto', 'minWidth': '100%'},
+                style_cell={
+                    'textAlign': 'left',
+                    'fontFamily': 'Poppins, sans-serif',
+                    'fontSize': '14px',
+                    'minWidth': '120px', 'width': '120px', 'maxWidth': '120px',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap'
+                },
+                style_header={
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#f0f0f0'
+                }
+            ),
+        ], style={"marginBottom": "40px"}),
+    ]),
 
-    # Unique restaurants
+    html.H3("Dataset Statistics", style={
+        "marginTop": "40px",
+        "color": "#a94442",
+        "fontWeight": 800,
+        "borderLeft": "6px solid #a94442",
+        "paddingLeft": "1rem",
+        "fontSize": "1.5rem"
+    }),
+
     html.Div([
         html.H4([
             "Unique Restaurants Count: ",
@@ -258,7 +295,6 @@ layout = html.Div([
     ], style={"marginTop": "10px", "marginBottom": "20px"}),
 
     html.Div([
-        # Left: Star Ratings Summary
         html.Div([
             html.H4("Review Star Ratings Summary"),
             dash_table.DataTable(
@@ -290,9 +326,9 @@ layout = html.Div([
                 ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
             ]),
             html.Details([
-            html.Summary("Description"),
-            html.P("The table shows statistics of the Review Stars column. "
-                   "As per the table, we can see that most of the reviews are between 3 and 5 stars.")
+                html.Summary("Description"),
+                html.P("The table shows statistics of the Review Stars column. "
+                       "As per the table, we can see that most of the reviews are between 3 and 5 stars.")
             ])
         ], style={
             "backgroundColor": "#f8f8f8",
@@ -303,30 +339,29 @@ layout = html.Div([
             "minWidth": "0"
         }),
 
-        # Right: Violin Plot
         html.Div([
             dcc.Graph(figure=px.violin(
-            restaurant_mean_stars,
-            y='stars',
-            box=True,
-            title='Distribution of Mean Restaurant Review Stars',
-            labels={'stars': 'Star Rating'}
+                restaurant_mean_stars,
+                y='stars',
+                box=True,
+                title='Distribution of Mean Restaurant Review Stars',
+                labels={'stars': 'Star Rating'}
             ).update_layout(height=400)),
             html.Details([
-            html.Summary("Show Code"),
-            dcc.Markdown('''
-            ```python
-            restaurant_mean_stars = philly_reviews_df.groupby('business_id')['stars'].mean().to_frame().reset_index()
-            fig = px.violin(restaurant_mean_stars, y='stars', box=True)
-            fig.update_layout(height=400)
-            fig.show()
-            ```
-            ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                restaurant_mean_stars = philly_reviews_df.groupby('business_id')['stars'].mean().to_frame().reset_index()
+                fig = px.violin(restaurant_mean_stars, y='stars', box=True)
+                fig.update_layout(height=400)
+                fig.show()
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
             ]),
             html.Details([
-            html.Summary("Description"),
-            html.P("This violin plot shows the distribution of the mean star ratings for restaurants. "
-                   "As per the graph, most restaurants have a mean rating between 3.5 and 4.5 stars. ")
+                html.Summary("Description"),
+                html.P("This violin plot shows the distribution of the mean star ratings for restaurants. "
+                       "As per the graph, most restaurants have a mean rating between 3.5 and 4.5 stars. ")
             ])
         ], style={
             "flex": "1",
@@ -335,45 +370,51 @@ layout = html.Div([
             "flexDirection": "column",
             "justifyContent": "space-between"
         }),
-        ], style={
+    ], style={
         "display": "flex",
         "gap": "20px",
-        "alignItems": "stretch",  # Ensures both children are same height
+        "alignItems": "stretch",
         "marginTop": "20px"
     }),
 
-    html.H3("Distributions", style={"marginTop": "40px"}),
+    html.H3("Distributions", style={
+        "marginTop": "40px",
+        "color": "#a94442",
+        "fontWeight": 800,
+        "borderLeft": "6px solid #a94442",
+        "paddingLeft": "1rem",
+        "fontSize": "1.5rem"
+    }),
 
     html.Div([
-        # First Plot (Stars)
         html.Div([
             dcc.Graph(figure=px.bar(
-            stars_count,
-            x='stars',
-            y='count',
-            title='Countplot of Restaurant Review Stars',
-            labels={'stars': 'Star Rating', 'count': 'Review Count'}
+                stars_count,
+                x='stars',
+                y='count',
+                title='Countplot of Restaurant Review Stars',
+                labels={'stars': 'Star Rating', 'count': 'Review Count'}
             ).update_layout(
-            height=400,
-            bargap=0.3
+                height=400,
+                bargap=0.3
             )),
             html.Details([
-            html.Summary("Show Code"),
-            dcc.Markdown('''
-            ```python
-            stars_count = philly_reviews_df['stars'].value_counts().reset_index()
-            stars_count.columns = ['stars', 'count']
-            stars_count = stars_count.sort_values(by='stars')
-            fig = px.bar(stars_count, x='stars', y='count')
-            fig.update_layout(bargap=0.3)
-            fig.show()
-            ```
-            ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
+                html.Summary("Show Code"),
+                dcc.Markdown('''
+                ```python
+                stars_count = philly_reviews_df['stars'].value_counts().reset_index()
+                stars_count.columns = ['stars', 'count']
+                stars_count = stars_count.sort_values(by='stars')
+                fig = px.bar(stars_count, x='stars', y='count')
+                fig.update_layout(bargap=0.3)
+                fig.show()
+                ```
+                ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
             ], style={"marginTop": "10px"}),
             html.Details([
-            html.Summary("Description"),
-            html.P("The graph depicts the distribution of the Review Stars. "
-                   "As per the graph, a 5 star rating was the most popular rating given.")
+                html.Summary("Description"),
+                html.P("The graph depicts the distribution of the Review Stars. "
+                       "As per the graph, a 5 star rating was the most popular rating given.")
             ], style={"marginTop": "10px"})
         ], style={
             "flex": "1",
@@ -381,7 +422,6 @@ layout = html.Div([
             "minWidth": "0"
         }),
 
-        # Second Plot (is_open)
         html.Div([
             dcc.Graph(
                 figure=px.bar(
@@ -392,7 +432,7 @@ layout = html.Div([
                     labels={"is_open": "Is Open (1 = Open, 0 = Closed)"}
                 ).update_layout(
                     height=400,
-                    xaxis=dict(tickmode='array', tickvals=[0, 1]),  # Clean up x-ticks
+                    xaxis=dict(tickmode='array', tickvals=[0, 1]),
                     bargap=0.3
                 )
             ),
@@ -425,9 +465,8 @@ layout = html.Div([
         "gap": "20px",
         "marginTop": "20px"
     }),
-    
+
     html.Div([
-        # Violin plot of review count grouped by buisiness_id
         html.Div([
             dcc.Graph(
                 figure=px.violin(
@@ -440,7 +479,6 @@ layout = html.Div([
                     height=400,
                 )
             ),
-            # show the plot code
             html.Details([
                 html.Summary("Show Code"),
                 dcc.Markdown('''
@@ -454,8 +492,8 @@ layout = html.Div([
             ], style={"marginTop": "10px"}),
             html.Details([
                 html.Summary("Description"),
-                html.P("the above graph depicts the distribution of the number of reviews for each restaurant. "
-                       "As per the graph, most restaurants have between 0 and 40 reviews, showing that many resturants do not have a lot of reviews. ")
+                html.P("The above graph depicts the distribution of the number of reviews for each restaurant. "
+                       "As per the graph, most restaurants have between 0 and 40 reviews, showing that many restaurants do not have a lot of reviews. ")
             ], style={"marginTop": "10px"})
         ], style={
             "flex": "1",
@@ -463,7 +501,6 @@ layout = html.Div([
             "minWidth": "0"
         }),
 
-        # Countplot of review count grouped by year and hue to is_open
         html.Div([
             dcc.Graph(
                 figure=px.histogram(
@@ -482,17 +519,16 @@ layout = html.Div([
                     height=400
                 )
             ),
-            # show the plot code
             html.Details([
                 html.Summary("Show Code"),
                 dcc.Markdown('''
-                    ```python
-                    plt.figure(figsize=(12, 6))  # Make the plot wider
-                    sns.countplot(philly_restaurant_reviews, x='year', hue='is_open')
-                    plt.xticks(rotation=45)      # Rotate x-axis labels 45 degrees
-                    plt.tight_layout()           # Adjust layout to prevent label cutoff
-                    plt.show()         
-                    ```
+                ```python
+                plt.figure(figsize=(12, 6))  # Make the plot wider
+                sns.countplot(philly_restaurant_reviews, x='year', hue='is_open')
+                plt.xticks(rotation=45)      # Rotate x-axis labels 45 degrees
+                plt.tight_layout()           # Adjust layout to prevent label cutoff
+                plt.show()         
+                ```
                 ''', style={"fontFamily": "Poppins, monospace", "whiteSpace": "pre-wrap"})
             ], style={'marginTop': '10px'}),
             html.Details([
@@ -500,7 +536,7 @@ layout = html.Div([
                 html.P("The above graph shows the number of reviews by year and open status. "
                        "As per the graph, most of the reviews are from open restaurants in 2014 to 2019. ")
             ], style={"marginTop": "10px"})
-        ],  style={
+        ], style={
             "flex": "1",
             "paddingLeft": "20px",
             "minWidth": "0"
@@ -512,8 +548,14 @@ layout = html.Div([
         "marginTop": "20px"
     }),
 
-    # ------- Map -------
-    html.H3("Map of Philadelphia Restaurants", style={"marginTop": "40px"}),
+    html.H3("Map of Philadelphia Restaurants", style={
+        "marginTop": "40px",
+        "color": "#a94442",
+        "fontWeight": 800,
+        "borderLeft": "6px solid #a94442",
+        "paddingLeft": "1rem",
+        "fontSize": "1.5rem"
+    }),
     html.Div([
         html.Label("Select Coloring Option:", style={"fontWeight": "bold", "fontSize": "16px"}),
         dcc.RadioItems(
@@ -529,12 +571,19 @@ layout = html.Div([
             style={"margin-bottom": "10px"},
         ),
         dcc.Graph(id="map-graph"),
-        html.P("The map shows the resturants in Philadelphia by open status, star rating, and review count. "
-               "By hovering over the dots, more infomation, such as the name of the resturant and category, can be seen. "
-               , 
+        html.P("The map shows the restaurants in Philadelphia by open status, star rating, and review count. "
+               "By hovering over the dots, more information, such as the name of the restaurant and category, can be seen.",
                style={"marginTop": "10px", "fontSize": "17px"})
     ]),
-    html.H3("Key Insights", style={"marginTop": "40px"}),
+
+    html.H3("Key Insights", style={
+        "marginTop": "40px",
+        "color": "#a94442",
+        "fontWeight": 800,
+        "borderLeft": "6px solid #a94442",
+        "paddingLeft": "1rem",
+        "fontSize": "1.5rem"
+    }),
     html.Ul([
         html.Li([
             "The majority of restaurants have a mean star rating between ",
@@ -561,7 +610,7 @@ layout = html.Div([
             ", with open restaurants dominating the review counts."
         ]),
         html.Li([
-            "Most restaurants in our dataset are concentrated in the ", html.Strong("heart"), " of the Philadelphia.",
+            "Most restaurants in our dataset are concentrated in the ", html.Strong("heart"), " of Philadelphia.",
         ])
     ], style={
         "backgroundColor": "#f8f8f8",
@@ -571,5 +620,4 @@ layout = html.Div([
         "marginTop": "20px",
         "borderLeft": "4px solid #d9534f",
     })
-    
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
