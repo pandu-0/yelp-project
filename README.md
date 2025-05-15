@@ -35,10 +35,16 @@ These packages can be installed using the `requirements.txt` file provided.
 
 ## ML Pipeline
 **Step 1:** The pipline begins with the preprocessing script where we take the original dataset and filter the dataset down to only include Phildelphia reviews. 
+
 **Step 2:** Then we move onto the EDA script where we used the dataset created in the previous step to conduct exploratory data analysis to learn more about the data and what we're working with. 
+
 **Step 3:** Once we finished our EDA, we did some more preprocessing, topic modeling, and testing in the topic modeling and BerTopic testing scripts.
+
 **Step 4:** After the topic modeling, we did some sentiment analysis in the sentiment analysis script. 
+
 **Step 5:** Finally to wrap things up, we did some conlusionary analysis based on the sentiment analysis and topic modeling results from the previous steps. 
+
+**Step 6:** After wrapping our analysis up, we proceeded to build and deploy our website, which consists of 4 pages: Home, EDA, Analysis, and Major Findings.
 
 ## Directory Information
 
