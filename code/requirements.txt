@@ -1,0 +1,17 @@
+bertopic
+hdbscan
+joblib
+matplotlib
+nltk
+numpy
+opendatasets
+pandas
+plotly
+pyspark
+scikit-learn
+scipy
+seaborn
+sentence-transformers
+torch
+tqdm
+transformers
