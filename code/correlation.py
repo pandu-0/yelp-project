@@ -1,7 +1,5 @@
 #Import Statements
-import opendatasets as od
 import pandas as pd
-import seaborn as sns
 from collections import Counter
 import nltk
 nltk.download('punkt')

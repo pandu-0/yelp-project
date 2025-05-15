@@ -2,7 +2,11 @@
 
 This repository contains the code and resources for our **Restaurant Review Project**. The aim of this project is to analyze customer reviews of restaurants and measure quality in a quantifiable manner. Using natural language processing (e.g., sentiment analysis), we examine reviews to uncover satisfaction patterns and identify key concerns. We use average review scores, sentiment polarity, and topic modeling across Yelp review datasets to provide insights for both customers and businesses.
 
-**Dataset:** https://business.yelp.com/data/resources/open-dataset/
+**Dataset:** [Yelp Dataset](https://business.yelp.com/data/resources/open-dataset/#:~:text=Documentation%20is%20included.-,Download%20JSON,-This%20download%20contains)
+
+> [!NOTE]  
+We suggest directly downloading the dataset from the link above and placing in your working directory instead of downloading
+it using the `opendatasets` library in our scripts. This will eliminate the need for the Kaggle API key.
 
 ## Setup
 1. Clone the repository:
@@ -49,7 +53,10 @@ This repository contains the code and resources for our **Restaurant Review Proj
 │       └── home.py             # Home page
 
 ```
-The above directory tree depicts the structure of the appengine folder. The appengine folder hosts all the code for the website. The main.py file should be run to see the website in debug mode. 
+The above directory tree depicts the structure of the appengine folder. The appengine folder hosts all the code for the website. The `main.py` file should be run to see the website in debug mode.
+
+> [!NOTE]  
+Please know that running `main.py` would not work for 
 
 ### Assets
 ```
@@ -64,7 +71,7 @@ The above directory tree depicts the structure of the appengine folder. The appe
 │   ├── sentiment_plot.svg             # Sentiment analysis plot
 │   ├── tips_head.json                 # Sample tips data
 │   └── user_head.json                 # Sample user data
-└── ReadMe.md                          # Project documentation
+└── README.md                          # Project documentation
 ```
 The above directory tree depicts the structure of the assets folder, which contains the datasets and sample datasets used in making the website. 
 
@@ -73,10 +80,10 @@ The above directory tree depicts the structure of the assets folder, which conta
 ├── code/                                 # Python scripts for data analysis and modeling
 │   ├── analyze_models.py                     # Script for comparing and analyzing different models
 │   ├── bertopic_modeling.py                  # Script for BERTopic topic modeling
-│   ├── dataset_acquire.py                    # Script for acquiring and preprocessing the Yelp dataset
+│   ├── acquire_dataset.py                    # Script for acquiring and preprocessing the Yelp dataset
 │   ├── eda.py                                # Script for exploratory data analysis (EDA)
 │   ├── nmf_modeling.py                       # Script for NMF topic modeling
-│   ├── open_status_adj_and_rating_correlation.py  # Script analyzing correlations between open status, adjectives, and ratings
+│   ├── correlation.py  # Script analyzing correlations between open status, adjectives, and ratings
 │   ├── sentiment_analysis.py                 # Script for sentiment analysis on Yelp reviews
 ```
 
