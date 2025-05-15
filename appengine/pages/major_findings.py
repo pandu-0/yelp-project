@@ -56,7 +56,7 @@ nmf_model = load_pickle_from_gcs(GCLOUD_BUCKET, f"models/nmf_model/nmf_model_top
 feature_names = vectorizer.get_feature_names_out()
 
 # Show top N words per topic
-no_top_words = 10
+no_top_words = 7
 nmf_topics = [
     [feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]]
     for topic in nmf_model.components_

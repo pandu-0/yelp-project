@@ -182,7 +182,8 @@ layout = html.Div([
         "The above plot shows the distribution of sentiment probabilities for each star rating. "
         "We can see that the model works because it assigns higher positivity probability to high "
         "ratings and lower positivity probability to low ratings. "
-        "This is a good sign that the model is working as intended; however, we can notice that neural probability of " \
+        "This is a good sign that the model is working as intended; however, we can notice that neutral probability of reviews " \
+        "across all ratings is nearly 0. This confirms that the dataset has a " \
         ""
     ),
 
