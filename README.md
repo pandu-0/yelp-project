@@ -83,12 +83,24 @@ The above directory tree depicts the structure of the assets folder, which conta
 
 ### Preprocessing/Analysis Code
 ```
-
-Preprocessing/Analysis Code directory tree goes here
+├── code/                                 # Python scripts for data analysis and modeling
+│   ├── analyze_models.py                     # Script for comparing and analyzing different models
+│   ├── bertopic_modeling.py                  # Script for BERTopic topic modeling
+│   ├── dataset_acquire.py                    # Script for acquiring and preprocessing the Yelp dataset
+│   ├── eda.py                                # Script for exploratory data analysis (EDA)
+│   ├── nmf_modeling.py                       # Script for NMF topic modeling
+│   ├── open_status_adj_and_rating_correlation.py  # Script analyzing correlations between open status, adjectives, and ratings
+│   ├── sentiment_analysis.py                 # Script for sentiment analysis on Yelp reviews
 ```
+
+Scripts used for data acquisition, exploratory analysis, topic modeling (BERTopic & NMF), sentiment analysis, and correlation studies in the Yelp review pipeline can be found in the `code` directory.
 
 ## Website Link
 https://cs163-project-452620.wn.r.appspot.com/
 
 ## Contact
-For questions please contact  .
+For questions please contact:
+
+Pandu Rupanagudi : [Linkedin](https://www.linkedin.com/in/manmohanbabu/)  
+Singaram Subramanyan : [LinkedIn](https://www.linkedin.com/in/singaram-s01/)
+

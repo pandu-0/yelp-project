@@ -18,3 +18,4 @@ preview_datasets/*
 __pycache__/
 # Ignored by the build system
 /setup.cfg
+codebase/*

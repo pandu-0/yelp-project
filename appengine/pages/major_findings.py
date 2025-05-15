@@ -103,7 +103,13 @@ layout = html.Div([
         "marginBottom" : "20px"
     }),
 
-    html.H3("NMF Topics Modeling Analysis"),
+    html.H3("NMF Topics Modeling Analysis (7 Topics)"),
+    html.P("After analyzing the topic words of each selection for the number of topics to be identified by NMF, " \
+        "we found 7 topics to be the ideal number which keeps a balance between topic uniqueness and theme. For instance, " \
+        "increasing the number of topics would allow to discover more fine-grained and unique topics; however, it would result " \
+        "in the model trying to segregate the reviews by identifying what food it is talking about, which is " \
+        "not useful for our project."
+    ),
     html.Div([
         html.Div([
             dash_table.DataTable(
@@ -187,5 +193,38 @@ layout = html.Div([
             style={'width': '100%', 'height': 'auto'}
         )
     ], style={"width": "100%", "display": "inline-block", "verticalAlign": "top"}),
+
+    html.P("The plot shows that Topic 1's mean star ratings have consistently declined over time, " \
+        "for both open and closed restaurants. This trend suggests growing dissatisfaction with wait times and service " \
+        "efficiency in customer experiences. In the context of our Yelp reviews project, Topic 1 likely captures negative " \
+        "sentiments around long waits, delays in service, or poor order handling — common themes that can significantly " \
+        "impact customer satisfaction. The sustained decline highlights how crucial timely service has become in shaping " \
+        "modern dining expectations, and how failure to meet those expectations can hurt long-term ratings."
+    ),
+
+    html.Div([
+        html.H4("Major Findings"),
+        html.Ul([
+            html.Li([
+                "There is no statistically significant difference in mean star ratings of open and closed restaurants across any topic"
+                "or over the course of time. "
+                "This suggests that the reason for restaurant closures might be due to other circumstances such as "
+                "competitiveness (no way to measure in our dataset) as most "
+                "restaurant are located in the center of the city"
+            ]),
+            html.Li([
+                "The lower mean review star of Topic 1 indicates that restaurants in Philadelphia are performing poorly in terms "
+                "of timely service of orders."
+            ])
+        ])
+    ], style={
+        "backgroundColor": "#f8f8f8",
+        "padding": "20px",
+        "fontFamily": "Poppins, sans-serif",
+        "lineHeight": "1.8",
+        "marginTop": "20px",
+        "borderLeft": "4px solid #d9534f",
+        "marginBottom" : "20px"
+    })
 
 ])
