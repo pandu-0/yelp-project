@@ -15,30 +15,17 @@ This repository contains the code and resources for our **Restaurant Review Proj
     ```
 3. Install the required dependencies:
     ```bash
-    pip install -r requirements.txt
+    pip install -r code/requirements.txt
     ```
-### Required Packages
 
-The following Python packages are required for this project:
 
-- `dash`
-- `plotly`
-- `pyspark`
-- `pandas`
-- `Flask`
-- `gunicorn`
-- `google-cloud-storage`
-- `joblib`
-- `scikit-learn`
-
-These packages can be installed using the `requirements.txt` file provided.
 
 ## ML Pipeline
 **Step 1:** The pipline begins with the preprocessing script where we take the original dataset and filter the dataset down to only include Phildelphia reviews. 
 
 **Step 2:** Then we move onto the EDA script where we used the dataset created in the previous step to conduct exploratory data analysis to learn more about the data and what we're working with. 
 
-**Step 3:** Once we finished our EDA, we did some more preprocessing, topic modeling, and testing in the topic modeling and BerTopic testing scripts.
+**Step 3:** Once we finished our EDA, we did some more preprocessing, topic modeling, and testing in the topic modeling and BERTopic testing scripts.
 
 **Step 4:** After the topic modeling, we did some sentiment analysis in the sentiment analysis script. 
 
@@ -94,6 +81,9 @@ The above directory tree depicts the structure of the assets folder, which conta
 ```
 
 Scripts used for data acquisition, exploratory analysis, topic modeling (BERTopic & NMF), sentiment analysis, and correlation studies in the Yelp review pipeline can be found in the `code` directory.
+
+> [!IMPORTANT]  
+Although all scripts can be run on a local machine, we highly suggest executing them on Google Colab since it comes with most packages pre-installed except for `bertopic`. You can also avoid package dependency problems in this way.
 
 ## Website Link
 https://cs163-project-452620.wn.r.appspot.com/

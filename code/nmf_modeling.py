@@ -4,12 +4,14 @@ import pandas as pd
 from tqdm.notebook import tqdm
 from bertopic import BERTopic
 import numpy as np
-import pandas as pd
 from sentence_transformers import SentenceTransformer
 import umap
 import hdbscan
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+import joblib
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import LatentDirichletAllocation
+from scipy.stats import ttest_ind
 
 # REPLACE FILE PATH WITH YOUR OWN
 philly_restaurant_reviews = pd.read_json('/yelp-dataset/philly_restaurants_reviews_with_sentiment_complete.json', lines=True)
@@ -91,15 +93,13 @@ for i in [5, 7, 10, 20]:
   print("Num Topics:", num_topics)
   display_topics(nmf_model, feature_names, no_top_words=10)
 
-import joblib
+
 # save vectorizer
 joblib.dump(vectorizer, f"/yelp-dataset/nmf_model/tfidf_vectorizer.pkl")
 
 # Save the models
 for num_topics, nmf_model in nmf_models:
   joblib.dump(nmf_model, f"/yelp-dataset/nmf_model/nmf_model_topics_{num_topics}.pkl")
-
-import numpy as np
 
 for num_topics, nmf_model in nmf_models:
   # Assign the topic with the highest probability
@@ -188,8 +188,7 @@ for review_emb in review_embeddings:
 for review, topics_found in zip(reviews, review_topics):
     print(f"\nReview: {review}\nTopics: {topics_found}")
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+
 
 # Topics you care about
 topics = ["food", "service", "ambience", "price", "location", "staff", "drinks", "cleanliness"]
@@ -252,8 +251,7 @@ for review_vec in review_vectors:
 for review, topics_found in zip(reviews, review_topics):
     print(f"\nReview: {review}\nTopics: {topics_found}")
 
-from sklearn.decomposition import LatentDirichletAllocation
-import pandas as pd
+
 
 # Reviews
 reviews = philly_restaurant_reviews.sample(n=100_000, random_state=42)['review'].tolist()
@@ -302,8 +300,6 @@ df[df['Assigned Topic'] == 'Topic 7']
 df[df['Assigned Topic'] == 'Topic 7'].iloc[0]['Review']
 
 
-
-
 # Your reviews
 reviews = philly_restaurant_reviews.sample(n=1_000, random_state=42)['review'].tolist()
 
@@ -321,8 +317,6 @@ print(topic_info)
 # vialize topics
 topic_model.visualize_topics().show()
 
-from scipy.stats import ttest_ind
-
 topic1 = df[df['topic'] == 1]['stars']
 others = df[df['topic'] != 1]['stars']
 
@@ -331,3 +325,4 @@ t_stat, p_val = ttest_ind(topic1, others, equal_var=False)
 
 print(f"T-statistic: {t_stat:.3f}, P-value (two-sided): {p_val:.4f}")
 print(f"P-value (one-sided, lower): {p_val/2:.4f}" if t_stat < 0 else "No evidence Topic 1 is lower.")
+
