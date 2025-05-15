@@ -183,15 +183,33 @@ layout = html.Div([
         "We can see that the model works because it assigns higher positivity probability to high "
         "ratings and lower positivity probability to low ratings. "
         "This is a good sign that the model is working as intended; however, we can notice that neutral probability of reviews " \
-        "across all ratings is nearly 0. This confirms that the dataset has a " \
-        ""
+        "across all ratings is negligible. This confirms that the dataset has sampling bias, meaning that only customers " \
+        "who were either really satisfied or really dissatisfied have decided to leave a review for the restaurant they visited" \
     ),
 
     html.H2("Topic Modeling", style={"fontWeight": "600", "textAlign": "center"}),
+    
+    html.P("Topic modeling is a powerful tool for uncovering hidden themes or patterns in large " \
+    "collections of text. By automatically grouping words into topics based on how frequently they appear together, " \
+    "it helps summarize and interpret unstructured data like customer reviews, articles, or social media posts. " \
+    "This allows analysts to quickly identify what people are talking about, track sentiment around key topics, "
+    "and make data-driven decisions without manually reading thousands of documents. In the context of Yelp reviews, " \
+    "topic modeling reveals common themes customers mention—such as service, food, or cleanliness—and how these relate " \
+    "to overall satisfaction."
+    ),
 
     html.H3("BERTopic Analysis", style={"fontWeight": "600"}),
+
+    html.P("BERTopic is a topic modeling technique that leverages transformer-based language models like BERT " \
+    "to generate more meaningful and context-aware topics from text. Unlike traditional methods that rely on word " \
+    "frequency, BERTopic uses dense embeddings to capture semantic relationships between words and documents. " \
+    "It then applies dimensionality reduction and clustering to group similar documents and extract representative " \
+    "keywords for each topic. This results in more coherent and interpretable topics, especially useful for analyzing " \
+    "unstructured text like reviews, feedback, or social media data. We use BERTopic in our project in an attempt to " \
+    "to identify common "
+    ),
+
     # topics figure
-    html.H3("Topics Distance Map", style={"marginTop": "30px"}),
     html.Div([
         html.Iframe(
             src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topics_fig.html",
@@ -201,6 +219,10 @@ layout = html.Div([
                 "border": "none",
                 "overflow": "hidden"
             }
+        ),
+        html.P("The intertopic distance map visualizes how distinct or similar topics are in a two-dimensional space, " \
+        "with larger bubbles representing more frequent topics. Closely positioned topics share more semantic similarity, " \
+        "while distant ones are more distinct in content."
         ),
         html.Details([
             html.Summary("Show Code"),
@@ -240,7 +262,6 @@ layout = html.Div([
     }),
 
     # topics word scores figure
-    html.H3("Topic word scores figure", style={"marginTop": "30px"}),
     html.Div([
         html.Iframe(
             src="https://storage.googleapis.com/cs163-project-452620.appspot.com/analysis/topic_word_scores_fig.html",
@@ -250,7 +271,15 @@ layout = html.Div([
                 "border": "none",
                 "overflow": "hidden"
             }
-        )
+        ), 
+        html.P("The topic word scores chart highlights the top keywords associated with each discovered topic, " \
+        "with bar lengths indicating their relative importance. This helps interpret the themes captured by the " \
+        "model—for example, Topic 0 is centered around pizza-related terms, while Topic 3 emphasizes sushi and " \
+        "Japanese cuisine. Specifically, it's worth noting in Topic 4 that 'wifi' is grouped along with words that relate " \
+        "to coffee shops and drinks although these words do not have the same meaning, they are still grouped in to the same " \
+        "Topic. This could be because many people especially students go to cafes for the wifi and caffeinated drinks " \
+        "to work on their assignments. BERTopic being able to capture this trend really highlights its expressiveness as " \
+        "a deep learning and clustering model. Moreover, we will discuss later how this is a problem for our project."),
     ], style={
         "padding": "0 5%",
         "marginBottom": "40px"
@@ -292,6 +321,16 @@ layout = html.Div([
     ),
 
     html.H2("Non-negative Matrix Factorization (NMF) Topic Modeling", style={"fontWeight": "600"}),
+    html.P("NMF is a linear topic modeling technique that decomposes document-term matrix into two " \
+    "smaller non-negative matrices representing topics and their word contributions. " \
+    "Each topic is a weighted combination of words, and each document is a mix of topics. NMF is often considered more " \
+    "interpretable than BERTopic because it produces sparse, additive results—making it easy to see which specific words " \
+    "contribute most to each topic. This simplicity allows for clearer insights, especially when the goal is to extract " \
+    "straightforward, human-readable themes from text data."),
+
+    html.P("Below we have an NMF model with varying number of topics identified from the Yelp Dataset reviews and their" \
+    "top 10 words of each topic are displayed: "),
+
     html.Div([
         html.Div([
             html.Label("Select Topic Count:", style={"fontWeight": "bold", "fontSize": "16px"}),
@@ -316,9 +355,6 @@ layout = html.Div([
                 style_cell={"textAlign": "left", "padding": "5px"},
                 style_header={"backgroundColor": "#f2f2f2", "fontWeight": "bold"},
             ),
-            html.P("The map shows the restaurants in Philadelphia by open status, star rating, and review count. "
-                   "By hovering over the dots, more information, such as the name of the restaurant and category, can be seen. ", 
-                   style={"marginTop": "10px", "fontSize": "17px"})
         ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
 
         html.Div([
