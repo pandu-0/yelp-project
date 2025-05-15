@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 from utils import load_pickle_from_gcs, GCLOUD_BUCKET
 
-dash.register_page(__name__, path='/visualization', name='Visualization')
+dash.register_page(__name__, path='/major-findings', name='Major-findings')
 df = pd.read_csv('https://raw.githubusercontent.com/pandu-0/yelp-project/refs/heads/main/assets/Adjective_correlation_rating')
 
 # Sort top 5 and bottom 5
