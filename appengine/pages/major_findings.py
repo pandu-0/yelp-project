@@ -64,10 +64,9 @@ nmf_topics = [
 
 topic_keywords = [" | ".join(words) for words in nmf_topics]
 
-
 # App layout
 layout = html.Div([
-    html.H2("Visualization"),
+    html.H2("Major Findings and Visualization"),
 
     html.Div([
         html.Label("Select Adjective Group:"),
@@ -121,14 +120,54 @@ layout = html.Div([
     }),
 
     html.Div([
+        html.H4("Statistical Test: Topic 1 Ratings"),
+
+        html.P("ANOVA (Analysis of Variance) followed by Tukey's HSD test revealed that Topic 1 has a significantly lower mean star " \
+                "rating compared to all other topics (Topics 2-6), with adjusted p-values < 0.001 in all cases. " \
+                "The mean differences ranged from 0.8 to 1.3 stars, indicating a substantial gap in perceived quality.",
+                style={"lineHeight": "1.6", "marginBottom": "10px"}),
+
+        html.P("Only Topic 0 had a similar rating to Topic 1, but it was still significantly different. " \
+                "These findings suggest Topic 1 is strongly associated with lower-rated experiences.",
+                style={"lineHeight": "1.6"}),
+
+        html.Details([
+            html.Summary("Show code"),
+            dcc.Markdown("""
+            ```python
+            import statsmodels.api as sm
+            from statsmodels.formula.api import ols
+            from statsmodels.stats.multicomp import pairwise_tukeyhsd
+                                    
+            test_df = philly_balanced_clean[['topic', 'stars']]
+            test_df.head()
+
+            # ANOVA
+            model = ols('stars ~ C(topic)', data=test_df).fit()
+            anova_table = sm.stats.anova_lm(model, typ=2)
+            print(anova_table)
+
+            # Post-hoc Tukey HSD
+            tukey = pairwise_tukeyhsd(test_df['stars'], test_df['topic'], alpha=0.05)
+            print(tukey.summary())
+            ```
+            """)
+        ], style={"marginTop": "10px"})
+    ], style={
+        "backgroundColor": "#f8f8f8",
+        "padding": "20px",
+        "fontFamily": "Poppins, sans-serif",
+        "lineHeight": "1.8",
+        "marginTop": "20px",
+        "borderLeft": "4px solid #d9534f",
+        "marginBottom" : "20px"
+    }),
+
+    html.Div([
         html.Img(
             src="https://raw.githubusercontent.com/pandu-0/yelp-project/main/assets/mean_rating_over_year_topic_7_plot.svg",
             style={'width': '100%', 'height': 'auto'}
         )
     ], style={"width": "100%", "display": "inline-block", "verticalAlign": "top"}),
 
-    html.Br(),
-    dcc.Link(html.Button("Back to Home"), href="/")
 ])
-
-

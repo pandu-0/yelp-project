@@ -125,54 +125,49 @@ layout = html.Div([
 
     # Preprocessing
     html.H2("Preprocessing", style={"fontWeight": "600"}),
-    html.Div([
-        html.Ul([
-            html.Li("The Yelp dataset was mostly clean with minimal null values and duplicates."),
-            html.Li("There was a class imbalance between open and closed restaurants."),
-            html.Li("To address this, open restaurants were under-sampled to match the number of closed ones."),
-            html.Li("Text data was cleaned by removing stop words, punctuation, and applying lemmatization."),
-            html.Li("Manual cleaning was chosen over TF-IDF to reduce dataset size."),
-            html.Li("We noticed cleaning helped improve the clarity of the topics identified by the various models.")
-        ]),
-        # show the preprocessing code
-        html.Details([
-            html.Summary("Show Preprocessing Code"),
-            dcc.Markdown("""
-            ```python
-            import spacy
-            import pandas as pd
-            import re
-                         
-            # balance the dataset
-            philly_closed = philly_restaurant_reviews[philly_restaurant_reviews['is_open'] == 0]
-            philly_open = philly_restaurant_reviews[philly_restaurant_reviews['is_open'] == 1].sample(len(philly_closed), random_state=42)
-            philly_balanced = pd.concat([philly_closed, philly_open], axis=0)
+    html.Ul([
+        html.Li("The Yelp dataset was mostly clean with minimal null values and duplicates."),
+        html.Li("There was a class imbalance between open and closed restaurants."),
+        html.Li("To address this, open restaurants were under-sampled to match the number of closed ones."),
+        html.Li("Text data was cleaned by removing stop words, punctuation, and applying lemmatization."),
+        html.Li("Manual cleaning was chosen over TF-IDF to reduce dataset size."),
+        html.Li("We noticed cleaning helped improve the clarity of the topics identified by the various models.")
+    ]),
+    # show the preprocessing code
+    html.Details([
+        html.Summary("Show Preprocessing Code"),
+        dcc.Markdown("""
+        ```python
+        import spacy
+        import pandas as pd
+        import re
+                        
+        # balance the dataset
+        philly_closed = philly_restaurant_reviews[philly_restaurant_reviews['is_open'] == 0]
+        philly_open = philly_restaurant_reviews[philly_restaurant_reviews['is_open'] == 1].sample(len(philly_closed), random_state=42)
+        philly_balanced = pd.concat([philly_closed, philly_open], axis=0)
 
-            # Load the small English model
-            nlp = spacy.load('en_core_web_sm')
+        # Load the small English model
+        nlp = spacy.load('en_core_web_sm')
 
-            def advanced_clean_text(text):
-                text = str(text).lower()  # Lowercase
-                text = re.sub(r'<.*?>', ' ', text)  # Remove HTML tags
-                text = re.sub(r'[^a-zA-Z\s]', '', text)  # Remove punctuation and numbers
-                text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
+        def advanced_clean_text(text):
+            text = str(text).lower()  # Lowercase
+            text = re.sub(r'<.*?>', ' ', text)  # Remove HTML tags
+            text = re.sub(r'[^a-zA-Z\s]', '', text)  # Remove punctuation and numbers
+            text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
 
-                doc = nlp(text)
-                tokens = [
-                    token.lemma_ for token in doc 
-                    if not token.is_stop and not token.is_punct and token.is_alpha
-                ]
-                return ' '.join(tokens)
+            doc = nlp(text)
+            tokens = [
+                token.lemma_ for token in doc 
+                if not token.is_stop and not token.is_punct and token.is_alpha
+            ]
+            return ' '.join(tokens)
 
-            # Apply it to your review column
-            philly_balanced['clean_review'] = philly_balanced['review'].apply(advanced_clean_text)
-            ```
-            """)
-        ])
-    ], style={
-        "padding": "0 5%",
-        "marginBottom": "20px"
-    }),
+        # Apply it to your review column
+        philly_balanced['clean_review'] = philly_balanced['review'].apply(advanced_clean_text)
+        ```
+        """)
+    ]),
 
     html.H2("Sentiment Analysis", style={"fontWeight": "600", "textAlign": "center"}),
     html.Div([
@@ -187,7 +182,9 @@ layout = html.Div([
         "The above plot shows the distribution of sentiment probabilities for each star rating. "
         "We can see that the model works because it assigns higher positivity probability to high "
         "ratings and lower positivity probability to low ratings. "
-        "This is a good sign that the model is working as intended. "),
+        "This is a good sign that the model is working as intended; however, we can notice that neural probability of " \
+        ""
+    ),
 
     html.H2("Topic Modeling", style={"fontWeight": "600", "textAlign": "center"}),
 
@@ -326,23 +323,16 @@ layout = html.Div([
         html.Div([
             dcc.Graph(id='nmf-topics-pie')
         ], style={"width": "48%", "display": "inline-block", "verticalAlign": "top"}),
-    html.H2("Correlation Between Open Status and Average Rating", style={"fontWeight": "600"}),
-    html.Div([
-        html.P(
-            "We calculated the Pearson corelation value between open status and average rating was got a value of 0.054492. "
-            "Since the value was statistically insignifacnt, we conducted a t-test. After conducting a t-test, we obtained a p-value of 0, which seemed odd. After digging deeper, "
-            "we realized this was due to the large number of columns in the dataset. To handle this, we used a random sampled dataset of a 1000 rows  "
-            "and obtained a p-value of 0.037, which is less than an alpha value of 0.05. "
-            "This indicated that the correlation value was statistically significant."
-        )
-    ], style={
-        
-        "marginBottom": "40px"
-    }),
     ], style={"padding": "0 5%", "marginBottom": "40px"}),
 
-    html.Br(),
-    dcc.Link(html.Button("Back to Home"), href="/"),
+    html.H2("Correlation Between Open Status and Average Rating", style={"fontWeight": "600"}),
+    html.P(
+        "We calculated the Pearson corelation value between open status and average rating was got a value of 0.054492. "
+        "Since the value was statistically insignificant, we conducted a t-test. After conducting a t-test, we obtained a p-value of 0, which seemed odd. After digging deeper, "
+        "we realized this was due to the large number of columns in the dataset. To handle this, we used a random sampled dataset of a 1000 rows  "
+        "and obtained a p-value of 0.037, which is less than an alpha value of 0.05. "
+        "This indicated that the correlation value was statistically significant."
+    ),
 
     # Key Insights Section
     html.H3("Key Insights", style={"marginTop": "40px"}),
@@ -377,10 +367,10 @@ layout = html.Div([
     ], style={
         "backgroundColor": "#f8f8f8",
         "padding": "20px",
-        "borderRadius": "10px",
         "fontFamily": "Poppins, sans-serif",
         "lineHeight": "1.8",
-        "marginTop": "20px"
+        "marginTop": "20px",
+        "borderLeft": "4px solid #d9534f",
     }),
 
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})

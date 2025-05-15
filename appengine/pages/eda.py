@@ -561,17 +561,15 @@ layout = html.Div([
             ", with open restaurants dominating the review counts."
         ]),
         html.Li([
-            "Philadelphia restaurants are concentrated in the metropolitan areas of the city",
-            html.Strong("locations"),
-            "."
+            "Most restaurants in our dataset are concentrated in the ", html.Strong("heart"), " of the Philadelphia.",
         ])
     ], style={
         "backgroundColor": "#f8f8f8",
         "padding": "20px",
-        "borderRadius": "10px",
         "fontFamily": "Poppins, sans-serif",
         "lineHeight": "1.8",
-        "marginTop": "20px"
+        "marginTop": "20px",
+        "borderLeft": "4px solid #d9534f",
     })
     
 ], style={"fontFamily": "Poppins, sans-serif", "padding": "20px"})
