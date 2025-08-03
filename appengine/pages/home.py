@@ -120,7 +120,7 @@ layout = html.Div([
                 {"name": "Top Words", "id": "Words"}
             ],
             data=[
-                {"Topic": f"Topic {i+1}", "Words": kw}
+                {"Topic": f"Topic {i}", "Words": kw}
                 for i, kw in enumerate(topic_keywords)
             ],
             style_table={"overflowX": "auto", "borderRadius": "0.8rem", "background": "#fff", "marginTop": "1.2rem"},
