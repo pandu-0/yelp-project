@@ -100,7 +100,7 @@ def update_map(color_by):
         margin={"r":0, "t":40, "l":0, "b":0},
         title=f"Philadelphia Restaurants Colored by {color_by.replace('_', ' ').title()}",
         title_x=0.5,
-        autosize=False
+        # autosize=False
     )
 
     return fig
