@@ -99,7 +99,8 @@ def update_map(color_by):
         mapbox_style="carto-positron",
         margin={"r":0, "t":40, "l":0, "b":0},
         title=f"Philadelphia Restaurants Colored by {color_by.replace('_', ' ').title()}",
-        title_x=0.5
+        title_x=0.5,
+        autosize=False
     )
 
     return fig
@@ -346,7 +347,7 @@ layout = html.Div([
                 box=True,
                 title='Distribution of Mean Restaurant Review Stars',
                 labels={'stars': 'Star Rating'}
-            ).update_layout(height=400)),
+            ).update_layout(height=400, autosize=False)),
             html.Details([
                 html.Summary("Show Code"),
                 dcc.Markdown('''
@@ -396,7 +397,8 @@ layout = html.Div([
                 labels={'stars': 'Star Rating', 'count': 'Review Count'}
             ).update_layout(
                 height=400,
-                bargap=0.3
+                bargap=0.3,
+                autosize=False
             )),
             html.Details([
                 html.Summary("Show Code"),
@@ -433,7 +435,7 @@ layout = html.Div([
                 ).update_layout(
                     height=400,
                     xaxis=dict(tickmode='array', tickvals=[0, 1]),
-                    bargap=0.3
+                    bargap=0.3, autosize=False
                 )
             ),
             html.Details([
@@ -477,6 +479,7 @@ layout = html.Div([
                     labels={'review': 'Number of Reviews'}
                 ).update_layout(
                     height=400,
+                    autosize=False
                 )
             ),
             html.Details([
@@ -516,7 +519,8 @@ layout = html.Div([
                     yaxis_title='Count',
                     xaxis_tickangle=45,
                     bargap=0.3,
-                    height=400
+                    height=400,
+                    autosize=False
                 )
             ),
             html.Details([
